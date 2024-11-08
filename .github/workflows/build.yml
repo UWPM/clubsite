@@ -1,34 +1,51 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
-
+name: Next.js CI
 on:
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   build:
-    env:
-      CI: false
-
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "20"
           cache: "npm"
           cache-dependency-path: "./package-lock.json"
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm run lint
+      - name: Install dependencies
+        run: npm ci
+      - name: Build the site
+        run: npm run build
+      - name: Run ESLint
+        run: npm run lint --if-present
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ORG_PERSONAL_ACCESS_TOKEN }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Prettier
+        run: npm run format --if-present
+      - name: Set up Git configuration
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Commit and Push Changes
+        run: |
+          git add -A
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Format code with Prettier" && git push)

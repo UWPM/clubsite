@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write ."
+    "format": "prettier --write 'app/**/*.{ts,tsx}' 'components/**/*.{ts,tsx}' 'data/**/*.{ts,tsx}' 'lib/**/*.{ts,tsx}'"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",

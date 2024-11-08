@@ -1,33 +1,38 @@
-# UW Product Management Website Redesign
+# UW Product Management Clubsite
 
-Welcome to the UW Product Management Club's website redesign project!
+Welcome to the UW Product Management Clubsite!
 
 ## Getting Started
 
 To set up the development environment, follow these steps:
 
 1. Clone the repository to your local desktop:  
-   `git clone https://github.com/UWPM/website-v3.0.git`
+   `git clone https://github.com/UWPM/clubsite.git`
 
-1. Navigate to the project directory:  
-   `cd website-v3.0`
+2. Navigate to the project directory:  
+   `cd clubsite`
 
-1. Install dependencies using npm:  
+3. Install dependencies using npm:  
    `npm install`
 
-1. Start the development client:  
+4. Start the development client:  
    `npm run dev`
 
 Now you can access the development version of the website at `http://localhost:3000`.
 
 ## GitHub Workflow
 
-We follow a specific GitHub workflow for working on new tickets. Please refer to our [GitHub Process Guide](https://www.notion.so/uwpm/GitHub-Process-e9d8c21b4d7d463f851803cce46dfff4) for detailed instructions on how to:
+Naming convention
+Branch names should be in the form category(scope or module)/message. Pull requests should be in the form `category(scope or module): message`. Here are the categories:
 
-- Create a new branch when working on a new ticket
-- Write meaningful commit messages
-- Create a pull request (PR)
+- `feat / feature`: all changes that introduce completely new code or new features
+- `fix`: changes that fix a bug (ideally you will additionally reference an issue if present)
+- `refactor`: any code related change that is not a fix nor a feature
+- `docs`: changing existing or creating new documentation (i.e. README, docs for usage of a lib or cli usage)
+- `chore`: all changes to the repository that do not fit into any of the above categories
 
-Happy coding! If you have any questions or need assistance, feel free to message in the `#engineering-team` channel on Discord!
+e.g. branch name `feat(editor)/tab-switching-speed`, pull request name `feat(editor): improve tab switching speed`
 
-<img src="https://media.tenor.com/e-LsbnNHQ5cAAAAd/catjam-cat-dancing.gif" alt="Dancing Cat" width="200">
+See the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format for more details.
+
+If you have any questions or need assistance, feel free to message in the `#engineering-team` channel on Discord.
