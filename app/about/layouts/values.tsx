@@ -1,88 +1,98 @@
+"use client";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import Image from "next/image";
+import {
+  Target,
+  Lightbulb,
+  Users,
+  BookOpen,
+  Heart,
+  Calendar,
+} from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { useRef } from "react";
 
-// export default function Values() {
-//   return (
-//     <section className="space-y-6">
-//       <h2>Our Values</h2>
-//       <div className=">:hover:not:hover-opacity-20 grid md:grid-cols-2 lg:grid-cols-4 gap-6 ">
-//         <ValueCard
-//           title={"Innovation"}
-//           description={
-//             "We value innovation as the driving force behind successful products, that comes from encouraging creative thinking, the exploration of new ideas, and the pursuit of inventive solutions to real-world problems."
-//           }
-//         />
-//         <ValueCard
-//           title={"Empowerment"}
-//           description={
-//             "We empower anyone to succeed and break into the world of product management by providing the resources, knowledge, and opportunities necessary to succeed. We believe in equipping individuals with the skills and experiences to work in product, no matter their background."
-//           }
-//         />
-//         <ValueCard
-//           title={"Continuous Learning"}
-//           description={
-//             "We embrace a growth mindset and value continuous learning for all our members. Members are encouraged to expand their horizons on the world of product from learning from everyone around them to strive for personal and professional development."
-//           }
-//         />
-//         <ValueCard
-//           title={"Community Engagement"}
-//           description={
-//             "We actively engage with the Waterloo product management community, both with alumni, current students and beyond, to exchange knowledge and build valuable long-lasting connections."
-//           }
-//         />
-//       </div>
-//     </section>
-//   );
-// }
-
-// type ValueCardProps = {
-//   title: string;
-//   description: string;
-// };
-
-// const ValueCard: React.FC<ValueCardProps> = ({ title, description }) => {
-//   return (
-//     <div className="group relative border py-6 px-3 rounded-lg">
-//       <Image
-//         alt={title}
-//         src={`/images/about-us/${title.toLowerCase().replaceAll(" ", "-")}.png`}
-//         width={300}
-//         height="300"
-//         className="absolute bottom-0 opacity-20 blur-sm brightness-[5%] transition-all group-hover:blur-none group-hover:brightness-50"
-//       />
-//       <div className="space-y-2.5">
-//         <h4 className="text-xl font-semibold">{title}</h4>
-//         <p className="">{description}</p>
-//       </div>
-//     </div>
-//   );
-// };
+const values = [
+  {
+    icon: <Target size={36} strokeWidth={2.5} />,
+    title: "Mission",
+    description:
+      "UW PM is dedicated to creating a thriving product management community and offering students exposure to the field of product.",
+  },
+  {
+    icon: <Lightbulb size={36} strokeWidth={2.5} />,
+    title: "Vision",
+    description:
+      "Inspire product-level thinking and explore the rationale behind what we should build and why that will propel students towards successful careers in product.",
+  },
+  {
+    icon: <Calendar size={36} strokeWidth={2.5} />,
+    title: "What We Do",
+    description:
+      "We host product case competitions, resume reviews, mock interviews, and panel discussions. Join us for ProdCon, our flagship competition each fall!",
+  },
+  {
+    icon: <Heart size={36} strokeWidth={2.5} />,
+    title: "Empowerment",
+    description:
+      "We empower anyone to succeed in product management by providing resources, knowledge, and opportunities, regardless of their background.",
+  },
+  {
+    icon: <BookOpen size={36} strokeWidth={2.5} />,
+    title: "Continuous Learning",
+    description:
+      "We embrace a growth mindset and encourage members to expand their horizons through learning from everyone around them.",
+  },
+  {
+    icon: <Users size={36} strokeWidth={2.5} />,
+    title: "Community",
+    description:
+      "We actively engage with the Waterloo product management community to exchange knowledge and build valuable long-lasting connections.",
+  },
+];
 
 export default function Values() {
+  const plugin = useRef(
+    Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
+  );
+  
   return (
-    <section className="space-y-6">
-      <h2>Our Values</h2>
-      <div className=">:hover:not:hover-opacity-20 grid gap-6 *:transition-all *:duration-200 hover:*:-translate-y-3 hover:*:shadow-2xl md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-card/50 bg-transparent text-primary shadow-lg">
-          <CardHeader className="flex items-center">
-            <Image
-              alt="test"
-              src="/images/about-us/innovation.png"
-              width="128"
-              height="128"
-              className="mb-4"
-            />
-          </CardHeader>
-          <CardContent className="space-y-2.5">
-            <h4 className="text-xl font-semibold">Innovation</h4>
-            <p>
-              We value innovation as the driving force behind successful
-              products, that comes from encouraging creative thinking, the
-              exploration of new ideas, and the pursuit of inventive solutions
-              to real-world problems.
-            </p>
-          </CardContent>
-        </Card>
+    <section className="space-y-6 py-24">
+      <h2 className="mx-24">Our values.</h2>
+      <div className="relative pl-24">
+        <Carousel
+          opts={{
+            loop: true,
+            dragFree: true,
+            align: "start",
+          }}
+          plugins={[plugin.current]}
+        >
+          <CarouselContent className="-ml-6">
+            {values.map((card, index) => (
+              <CarouselItem key={index} className="basis-[400px] pl-6">
+                <Card className="border-none transition-all duration-100 hover:scale-[1.01]">
+                  <CardHeader className="pb-4">{card.icon}</CardHeader>
+                  <CardContent className="space-y-2.5">
+                    <h4 className="text-3xl font-semibold">{card.title}</h4>
+                    <p className="line-clamp-4">{card.description}</p>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="flex justify-start gap-2 pt-6">
+            <CarouselPrevious className="relative inset-auto translate-y-0" />
+            <CarouselNext className="relative inset-auto translate-y-0" />
+          </div>
+        </Carousel>
       </div>
     </section>
   );
