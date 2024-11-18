@@ -6,14 +6,5 @@ import WhatWeDo from "./layouts/what-we-do";
 import WorkExperience from "./layouts/work-experience";
 
 export default function Home() {
-  return (
-    <Template>
-      <Hero />
-      <WhatWeDo />
-      <OurImpact />
-      <PastEvents />
-      {/* // TODO: Change the name for this component */}
-      <WorkExperience />
-    </Template>
-  );
+  return <Hero />;
 }
