@@ -31,7 +31,7 @@ Branch names should be in the form category(scope or module)/message. Pull reque
 - `docs`: changing existing or creating new documentation (i.e. README, docs for usage of a lib or cli usage)
 - `chore`: all changes to the repository that do not fit into any of the above categories
 
-e.g. branch name `feat(editor)/tab-switching-speed`, pull request name `feat(editor): improve tab switching speed`
+e.g. branch name `feat/tab-switching-speed`, pull request name `feat: improve tab switching speed`
 
 See the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format for more details.
 
