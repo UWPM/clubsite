@@ -26,26 +26,3 @@ jobs:
         run: npm run build
       - name: Run ESLint
         run: npm run lint --if-present
-
-  format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.ORG_PERSONAL_ACCESS_TOKEN }}
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Install dependencies
-        run: npm ci
-      - name: Run Prettier
-        run: npm run format --if-present
-      - name: Set up Git configuration
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-      - name: Commit and Push Changes
-        run: |
-          git add -A
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Format code with Prettier" && git push)
