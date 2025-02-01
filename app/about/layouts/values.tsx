@@ -62,7 +62,7 @@ export default function Values() {
   const plugin = useRef(
     Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
   );
-
+  
   return (
     <section className="space-y-6 py-24">
       <h2 className="mx-24">Our values.</h2>
