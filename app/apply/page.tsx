@@ -4,7 +4,7 @@ import Hero from "./layouts/hero";
 export default function Apply() {
   return (
     <Template>
-        <Hero />
+      <Hero />
     </Template>
   );
 }
