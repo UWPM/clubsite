@@ -53,7 +53,7 @@ export function Marketing({ control }: { control: any }) {
 
               The speaker panel will be held on Zoom on the day June 18th at 7PM - 8PM EST. The attendees must sign up using the link (signupform.com) with the deadline being June 17th at 11:59PM EST.
 
-              We're excited to see what you come up with!
+              We&apos;re excited to see what you come up with!
             </div>
             <FormMessage />
             </FormItem>
