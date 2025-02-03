@@ -37,7 +37,7 @@ export function Marketing({ control }: { control: any }) {
             <FormItem>
             <FormLabel>Example Scenario</FormLabel>
             <div style={{ fontSize: "0.8rem" }}>
-              UW PM will be holding a speaker panel for those looking to learn more about product management and how industry professionals' day-to-day are like. There will be 4 different product manager panelists who will be discussing: 
+              UW PM will be holding a speaker panel for those looking to learn more about product management and how industry professionals&apos; day-to-day are like. There will be 4 different product manager panelists who will be discussing: 
               <br /><br />
               
               <div>
