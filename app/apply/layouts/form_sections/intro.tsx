@@ -8,6 +8,7 @@ import { teamOptions, secondTeamOptions, handleWordCount } from "../formSchema"
 export function Intro({ control }: { control: any }) {
     return (
       <>
+        <h3>Intro</h3>
         <FormField
           control={control}
           name="email"
@@ -159,7 +160,7 @@ export function Intro({ control }: { control: any }) {
                     placeholder=""
                     className="resize-y"
                     value={field.value} // Bind the field value directly
-                    onChange={(e) => handleWordCount(e, field)} // Attach word count handler
+                    onChange={(e) => handleWordCount(e, field, 100)} // Attach word count handler
                   />
               </FormControl>
               <FormDescription>

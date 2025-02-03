@@ -35,6 +35,9 @@ export function ProfileForm() {
       first_choice_team: "",
       second_choice_team: "",
       resume_link: "",
+
+      // Outreach
+      outreach_interested_roles: [""],
     },
   })
 
