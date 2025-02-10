@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 import { teamOptions, secondTeamOptions, handleWordCount } from "../formSchema"
 
-const outreach_interested_roles = [{id: "Outreach Director", label: "Outreach Director"}, {id: "Outreach Lead", label: "Outreach Lead"}] as const
+const outreach_interested_roles = [{id: "director", label: "Outreach Director"}, {id: "lead", label: "Outreach Lead"}] as const
 
 export function Outreach({ control }: { control: any }) {
     return (
@@ -119,7 +119,7 @@ export function Outreach({ control }: { control: any }) {
                         <Textarea
                             placeholder=""
                             className="resize-y"
-                            value={field.value}
+                            {...field}
                         />
                     </FormControl>
                     <FormDescription>

@@ -57,18 +57,23 @@ export function Engineering({ control }: { control: any }) {
             )}
             />
 
+            {/* Textarea */}
             <FormField
-            control={control}
-            name="engineering_project_link"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Please provide us a link (Devpost, Github, anything) to a project that you are proud of!</FormLabel>
-                <FormControl>
-                    <Input placeholder="" {...field} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
+                control={control}
+                name="engineering_project_link"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Please provide us a link (Devpost, Github, anything) to a project that you are proud of!</FormLabel>
+                    <FormControl>
+                        <Textarea
+                            placeholder=""
+                            className="resize-none max-h-10 min-h-10"
+                            {...field}
+                        />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
             />
         </>
     )

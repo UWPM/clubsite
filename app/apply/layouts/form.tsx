@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { teamOptions, secondTeamOptions, formSchema } from "./formSchema"
+import { formSchema } from "./formSchema"
+import { FormSubmission } from "./formSchema"
 
 // Form Sections
 import { Intro } from "./form_sections/intro"
@@ -23,6 +24,7 @@ export function ProfileForm() {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    // resolver: undefined,
     defaultValues: {
       // Add default values here.
       email: "",
@@ -37,16 +39,40 @@ export function ProfileForm() {
       resume_link: "",
 
       // Outreach
-      outreach_interested_roles: [""],
+      outreach_interested_roles: [],
     },
   })
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+    // Clean up data before submission: remove empty arrays.
+    if (values.outreach_interested_roles && values.outreach_interested_roles.length === 0) {
+      delete values.outreach_interested_roles;
+    }
+
+    // Data mapping
+    const submission: FormSubmission = {
+      created_at: Date.now(),
+      uw_email_address: values.email,
+      full_name: values.full_name,
+      program: values.program,
+      term: values.term,
+      term_type: values.term_type,
+      on_campus: values.on_campus === "Yes" ? true : false,
+      why_interested: values.why_interested,
+      first_choice_team: values.first_choice_team,
+      second_choice_team: values.second_choice_team,
+      resume_link: values.resume_link,
+    }
+    
+
+    console.log(submission);
   }
+  
+  const { control, watch } = form;
+  const selectedTeams = watch(["first_choice_team", "second_choice_team"]);
+  
+  // console.log(form.getValues());
 
   return (
     <Form {...form}>
@@ -54,12 +80,12 @@ export function ProfileForm() {
 
         <Intro control={form.control} />
         
-        <Events control={form.control}/>
-        <Secretary control={form.control} />
-        <Marketing control={form.control} />
-        <Outreach control={form.control} />
-        <Podcast control={form.control} />
-        <Engineering control={form.control} />
+        {selectedTeams.includes("Events") && <Events control={form.control}/>}
+        {selectedTeams.includes("Secretary") && <Secretary control={form.control} />}
+        {selectedTeams.includes("Marketing") && <Marketing control={form.control} />}
+        {selectedTeams.includes("Outreach") && <Outreach control={form.control} />}
+        {selectedTeams.includes("Podcast") && <Podcast control={form.control} />}
+        {selectedTeams.includes("Engineering") && <Engineering control={form.control} />}
 
         <Button type="submit">Submit</Button>
       </form>
