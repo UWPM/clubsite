@@ -14,7 +14,7 @@ import { teamOptions,secondTeamOptions, handleWordCount, questionToText} from ".
 
 export function Events({ control }: { control: any }) {
   return (
-    <>
+    <div className="space-y-5">
       <h3>Events</h3>
 
       {/* Textarea with word limit */}
@@ -58,6 +58,6 @@ export function Events({ control }: { control: any }) {
           </FormItem>
         )}
       />
-    </>
+    </div>
   );
 }

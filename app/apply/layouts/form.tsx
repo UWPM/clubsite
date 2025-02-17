@@ -6,6 +6,18 @@ import { z } from "zod"
 
 import { formSchema } from "./formSchema"
 import { FormSubmission, TeamResponses } from "./formSchema"
+import { useState, useCallback, useEffect } from "react"
+
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+
+import { Card, CardContent } from "@/components/ui/card"
+import useEmblaCarousel from "embla-carousel-react"
 
 import { supabase } from '../supabaseClient';
 
@@ -156,23 +168,75 @@ export function ProfileForm() {
   const { control, watch } = form;
   const selectedTeams = watch(["first_choice_team", "second_choice_team"]);
   
-  // console.log(form.getValues());
+  // Carousel config
+  const [emblaRef, emblaApi] = useEmblaCarousel()
+  const [currentSlide, setCurrentSlide] = useState(0)
+  
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev()
+  }, [emblaApi])
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext()
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (emblaApi) {
+      emblaApi.on("select", () => {
+        setCurrentSlide(emblaApi.selectedScrollSnap())
+      })
+    }
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (emblaApi) {
+      emblaApi.reInit()
+    }
+  }, [emblaApi]) // Removed selectedTeams from dependencies
+
+  const slides = [
+    { id: "intro", component: <Intro control={control} /> },
+    ...(selectedTeams.includes("Events") ? [{ id: "events", component: <Events control={control} /> }] : []),
+    ...(selectedTeams.includes("Secretary") ? [{ id: "secretary", component: <Secretary control={control} /> }] : []),
+    ...(selectedTeams.includes("Marketing") ? [{ id: "marketing", component: <Marketing control={control} /> }] : []),
+    ...(selectedTeams.includes("Outreach") ? [{ id: "outreach", component: <Outreach control={control} /> }] : []),
+    ...(selectedTeams.includes("Podcast") ? [{ id: "podcast", component: <Podcast control={control} /> }] : []),
+    ...(selectedTeams.includes("Engineering") ? [{ id: "engineering", component: <Engineering control={control} /> }] : []),
+    ...(selectedTeams.includes("Finance") ? [{ id: "finance", component: <Finance control={control} /> }] : []),
+  ]
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 relative select-none">
+        <div className="w-full mx-auto relative">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex">
+              {slides.map((slide, index) => (
+                <div className="flex-[0_0_100%]" key={slide.id}>
+                  <Card className="h-[80vh] relative m-1 rounded-xl">
+                    <CardContent className="absolute inset-0 p-6 overflow-y-auto">{slide.component}</CardContent>
+                    <div className="absolute bottom-4 left-4">
+                      {index > 0 && (
+                        <Button onClick={scrollPrev} variant="outline">
+                          Previous
+                        </Button>
+                      )}
+                    </div>
+                    <div className="absolute bottom-4 right-4">
+                      {index < slides.length - 1 && (
+                        <Button onClick={scrollNext} variant="outline">
+                          Next
+                        </Button>
+                      )}
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>      
 
-        <Intro control={form.control} />
-        
-        {selectedTeams.includes("Events") && <Events control={form.control}/>}
-        {selectedTeams.includes("Secretary") && <Secretary control={form.control} />}
-        {selectedTeams.includes("Marketing") && <Marketing control={form.control} />}
-        {selectedTeams.includes("Outreach") && <Outreach control={form.control} />}
-        {selectedTeams.includes("Podcast") && <Podcast control={form.control} />}
-        {selectedTeams.includes("Engineering") && <Engineering control={form.control} />}
-        {selectedTeams.includes("Finance") && <Finance control={form.control} />}
-
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="right-4 absolute">Submit</Button>
       </form>
     </Form>
   )

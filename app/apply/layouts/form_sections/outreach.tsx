@@ -20,7 +20,7 @@ const outreach_interested_roles = [
 
 export function Outreach({ control }: { control: any }) {
   return (
-    <>
+    <div className="space-y-5">
       <h3>Outreach</h3>
 
       <FormField
@@ -32,9 +32,6 @@ export function Outreach({ control }: { control: any }) {
               <FormLabel>
                 Select the roles for which you are interested.
               </FormLabel>
-              {/* <FormDescription>
-                    Select the items you want to display in the sidebar.
-                    </FormDescription> */}
             </div>
             {outreach_interested_roles.map((item) => (
               <FormField
@@ -133,6 +130,6 @@ export function Outreach({ control }: { control: any }) {
           </FormItem>
         )}
       />
-    </>
+    </div>
   );
 }

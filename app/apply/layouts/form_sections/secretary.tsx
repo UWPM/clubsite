@@ -14,7 +14,7 @@ import { teamOptions,secondTeamOptions, handleWordCount, questionToText} from ".
 
 export function Secretary({ control }: { control: any }) {
   return (
-    <>
+    <div className="space-y-5">
       <h3>Secretary</h3>
 
       {/* Textarea with word limit */}
@@ -79,6 +79,6 @@ export function Secretary({ control }: { control: any }) {
           </FormItem>
         )}
       />
-    </>
+    </div>
   );
 }

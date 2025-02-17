@@ -8,7 +8,7 @@ import { teamOptions, secondTeamOptions, handleWordCount, questionToText } from 
 
 export function Engineering({ control }: { control: any }) {
     return (
-        <>
+        <div className="space-y-5">
             <h3>Engineering</h3>
 
             {/* Textarea with word limit */}
@@ -75,6 +75,6 @@ export function Engineering({ control }: { control: any }) {
                     </FormItem>
                 )}
             />
-        </>
+        </div>
     )
 }

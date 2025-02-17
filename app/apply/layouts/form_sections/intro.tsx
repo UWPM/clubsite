@@ -7,8 +7,8 @@ import { teamOptions, secondTeamOptions, handleWordCount } from "../formSchema"
 
 export function Intro({ control }: { control: any }) {
     return (
-      <>
-        <h3>Intro</h3>
+      <div className="space-y-5">
+        <h3>General Info</h3>
         <FormField
           control={control}
           name="email"
@@ -249,6 +249,6 @@ export function Intro({ control }: { control: any }) {
         />
 
 
-      </>
+      </div>
     )
 }

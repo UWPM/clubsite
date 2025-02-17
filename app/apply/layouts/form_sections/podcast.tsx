@@ -15,7 +15,7 @@ import { teamOptions,secondTeamOptions, handleWordCount, questionToText} from ".
 
 export function Podcast({ control }: { control: any }) {
   return (
-    <>
+    <div className="space-y-5">
       <h3>Podcast</h3>
 
       {/* Textarea with word limit */}
@@ -59,6 +59,6 @@ export function Podcast({ control }: { control: any }) {
           </FormItem>
         )}
       />
-    </>
+    </div>
   );
 }
