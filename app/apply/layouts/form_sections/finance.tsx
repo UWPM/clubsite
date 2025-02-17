@@ -1,23 +1,20 @@
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 
 import { teamOptions, secondTeamOptions, handleWordCount, questionToText } from "../formSchema"
 
-export function Engineering({ control }: { control: any }) {
+export function Finance({ control }: { control: any }) {
     return (
         <>
-            <h3>Engineering</h3>
+            <h3>Finance</h3>
 
             {/* Textarea with word limit */}
             <FormField
             control={control}
-            name="engineering_skills"
+            name="finance_project"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>{questionToText["engineering_skills"]}</FormLabel>
+                <FormLabel>{questionToText["finance_project"]}</FormLabel>
                 <FormControl>
                     <Textarea
                         placeholder=""
@@ -37,10 +34,10 @@ export function Engineering({ control }: { control: any }) {
             {/* Textarea with word limit */}
             <FormField
             control={control}
-            name="engineering_technical_challenge"
+            name="finance_time_management"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>{questionToText["engineering_technical_challenge"]}</FormLabel>
+                <FormLabel>{questionToText["finance_time_management"]}</FormLabel>
                 <FormControl>
                     <Textarea
                         placeholder=""
@@ -55,25 +52,6 @@ export function Engineering({ control }: { control: any }) {
                 <FormMessage />
                 </FormItem>
             )}
-            />
-
-            {/* Textarea */}
-            <FormField
-                control={control}
-                name="engineering_project_link"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>{questionToText["engineering_project_link"]}</FormLabel>
-                    <FormControl>
-                        <Textarea
-                            placeholder=""
-                            className="resize-none max-h-10 min-h-10"
-                            {...field}
-                        />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
             />
         </>
     )
