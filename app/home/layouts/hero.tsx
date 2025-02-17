@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -22,10 +23,12 @@ export default function Hero() {
 
         <div className="flex space-x-4">
           <Button className="flex-1">Learn more</Button>
-          <Button className="group flex-1 shrink-0" variant="link">
-            Join our team{" "}
-            <ArrowRight className="ml-1 w-4 -translate-x-1 scale-0 transition-all duration-200 group-hover:translate-x-0 group-hover:scale-100" />
-          </Button>
+          <Link href="/apply">
+            <Button className="group flex-1 shrink-0" variant="link">
+              Join our team{" "}
+              <ArrowRight className="ml-1 w-4 -translate-x-1 scale-0 transition-all duration-200 group-hover:translate-x-0 group-hover:scale-100" />
+            </Button>
+          </Link>
         </div>
       </header>
     </>
