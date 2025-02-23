@@ -18,6 +18,7 @@ export function Intro({ control }: { control: any }) {
               <FormControl>
                 <Input placeholder="john1doe@uwaterloo.ca" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
