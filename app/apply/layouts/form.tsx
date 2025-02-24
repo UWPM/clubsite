@@ -16,9 +16,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
-
 
 import { supabase } from '../supabaseClient';
 
@@ -171,6 +169,19 @@ export function ProfileForm() {
       console.log("Data inserted successfully", appData);
       setSubmitted(true);
       setEmail(values.email);
+      
+      // trigger confirmation email via the API route
+      try {
+        const response = await fetch("/api/email", {
+          method: "GET", // GET for testing, will be POST in production
+          headers: { "Content-Type": "application/json" },
+          // body: JSON.stringify({ email: values.email, fullName: values.full_name }),
+        });
+        if (!response.ok) throw new Error("Failed to trigger email");
+        console.log("Email trigger response:", await response.json());
+      } catch (error) {
+        console.error("Error triggering email:", error);
+      }
     }
 
     setSubmitting(false);
