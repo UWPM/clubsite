@@ -3,13 +3,22 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { useState, useCallback, useEffect } from "react"
 
 import { formSchema } from "./formSchema"
 import { FormSubmission, TeamResponses } from "./formSchema"
-import { useState, useCallback, useEffect } from "react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import useEmblaCarousel from "embla-carousel-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 
 import { supabase } from '../supabaseClient';
 
@@ -21,13 +30,18 @@ import { Marketing } from "./form_sections/marketing"
 import { Outreach } from "./form_sections/outreach"
 import { Podcast } from "./form_sections/podcast"
 import { Engineering } from "./form_sections/engineering"
+import { Finance } from "./form_sections/finance"
 
 import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
-import { Finance } from "./form_sections/finance"
-
+import Spinner from "@/components/ui/spinner"
 
 export function ProfileForm() {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
+  const [email, setEmail] = useState<string | null>(null);
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,6 +66,8 @@ export function ProfileForm() {
 
   // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setSubmitting(true);
+
     // Clean up data before submission: remove empty arrays.
     if (values.outreach_interested_roles && values.outreach_interested_roles.length === 0) {
       delete values.outreach_interested_roles;
@@ -73,8 +89,6 @@ export function ProfileForm() {
       team_responses: {} as TeamResponses,
     }
     
-    // console.log('values', values);
-
     // Populate the `team_responses` dynamically based on selected teams
     const teamResponses: TeamResponses = {};
 
@@ -141,7 +155,6 @@ export function ProfileForm() {
 
     // Attach team responses JSON to the submission data
     submission.team_responses = teamResponses;
-
     console.log(submission);
 
     const { data: appData, error: appError } = await supabase
@@ -149,21 +162,28 @@ export function ProfileForm() {
       .insert([submission])
       .select("id")
       .single();
-
+    
     if (appError) {
       console.error("Error inserting data:", appError);
+      setSubmitError(true);
+      setEmail(null);
     } else {
       console.log("Data inserted successfully", appData);
+      setSubmitted(true);
+      setEmail(values.email);
     }
+
+    setSubmitting(false);
   }
   
+  // Team choice logic
   const { control, watch } = form;
   const selectedTeams = watch(["first_choice_team", "second_choice_team"]);
   
-  // Carousel config
+  // Carousel config //////////////////////////////////////////////////////////////
   const [emblaRef, emblaApi] = useEmblaCarousel()
   const [currentSlide, setCurrentSlide] = useState(0)
-  
+
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev()
   }, [emblaApi])
@@ -185,7 +205,7 @@ export function ProfileForm() {
       emblaApi.reInit()
     }
   }, [emblaApi]) // Removed selectedTeams from dependencies
-
+  
   const slides = [
     { id: "intro", component: <Intro control={control} /> },
     ...(selectedTeams.includes("Events") ? [{ id: "events", component: <Events control={control} /> }] : []),
@@ -197,44 +217,80 @@ export function ProfileForm() {
     ...(selectedTeams.includes("Finance") ? [{ id: "finance", component: <Finance control={control} /> }] : []),
   ]
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 relative select-none transition-opacity">
-        <div className="w-full mx-auto relative">
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex">
-              {slides.map((slide, index) => (
-                <div className="flex-[0_0_100%]" key={slide.id}>
-                  <Card className="h-[80vh] relative m-1 rounded-xl">
-                    <CardContent className="absolute inset-0 p-6 overflow-y-auto">{slide.component}</CardContent>
+  //////////////////////////////////////////////////////////////////////////////
 
-                    <div className="absolute top-8 right-8 px-2 py-1 border border-zinc-200 rounded-md bg-zinc-50 shadow-lg">
-                      Step <strong>{index + 1}</strong> <span className="text-zinc-500">of {slides.length}</span>
-                    </div>
-                    
-                    <div className="absolute bottom-4 left-4">
-                      {index > 0 && (
-                        <Button onClick={scrollPrev} variant="outline" type="button">
-                          Previous
-                        </Button>
-                      )}
-                    </div>
-                    <div className="absolute bottom-4 right-4">
-                      {index < slides.length - 1 && (
-                        <Button onClick={scrollNext} variant="outline" type="button">
-                          Next
-                        </Button>
-                      )}
-                    </div>
-                  </Card>
-                </div>
-              ))}
+  return (
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 relative select-none transition-opacity">
+          <div className="w-full mx-auto relative">
+            <div className="overflow-hidden" ref={emblaRef}>
+              <div className="flex">
+                {slides.map((slide, index) => (
+                  <div className="flex-[0_0_100%]" key={slide.id}>
+                    <Card className="h-[80vh] relative m-1 rounded-xl">
+                      <CardContent className="absolute inset-0 p-6 overflow-y-auto">{slide.component}</CardContent>
+                      <div className="absolute top-8 right-8 px-2 py-1 border border-zinc-200 rounded-md bg-zinc-50 shadow-lg">
+                        Step <strong>{index + 1}</strong> <span className="text-zinc-500">of {slides.length}</span>
+                      </div>
+      
+                      <div className="absolute bottom-4 left-4">
+                        {index > 0 && (
+                          <Button onClick={scrollPrev} variant="outline" type="button">
+                            Previous
+                          </Button>
+                        )}
+                      </div>
+                      <div className="absolute bottom-4 right-4">
+                        {index < slides.length - 1 && (
+                          <Button onClick={scrollNext} variant="outline" type="button">
+                            Next
+                          </Button>
+                        )}
+                      </div>
+                    </Card>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>      
+          <Button type="submit" className="right-4 absolute">Submit</Button>
+        </form>
+      </Form>
 
-        <Button type="submit" className="right-4 absolute">Submit</Button>
-      </form>
-    </Form>
+      {submitting && 
+        <Spinner size="small" />
+      }
+
+      {/* Dialog for submission feedback */}
+      <Dialog open={submitted || submitError} onOpenChange={(open) => {
+        if (!open) {
+          setSubmitted(false);
+          setSubmitError(false);
+        }
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{submitted ? "Submission Successful" : "Submission Failed"}</DialogTitle>
+            <DialogDescription>
+              {submitted
+                ? `Thank you for applying to UWPM! Please check your inbox (${email}) for a confirmation email.`
+                : "There was an error submitting your application. Please try again."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 flex justify-end">
+            <Button
+              variant={submitted ? "default" : "destructive"}
+              onClick={() => {
+                setSubmitted(false);
+                setSubmitError(false);
+              }}
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
