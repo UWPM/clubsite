@@ -3,12 +3,62 @@ import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 
-import { teamOptions, secondTeamOptions, handleWordCount } from "../formSchema"
+// dropdown depencencies
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Check, ChevronsUpDown } from "lucide-react"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+
+import { programs } from "../../programs";  // temporary
+import { teamOptions, secondTeamOptions, handleWordCount, terms } from "../formSchema"
+import { useState, useEffect } from "react"
+
+type Program = {
+  value: string
+  formalName: string
+}
+
+const programList: Program[] = []
+
+programs.forEach(program => {
+  if (programList.find((p) => p.value === program.code)) return // Skip if already exists
+  programList.push({value: program.code, formalName: program.descriptionFormal})
+});
+
 
 export function Intro({ control }: { control: any }) {
+  const [open, setOpen] = useState(false)
+  const [value, setValue] = useState("")
+  const [currentProgram, setCurrentProgram] = useState("");
+  const [isFading, setIsFading] = useState(false);
+
+  useEffect(() => {
+    if (currentProgram) {
+      setIsFading(false);
+      setTimeout(() => setIsFading(true), 200);
+    }
+  }, [currentProgram]);
+  
     return (
       <div className="space-y-5">
-        <h3>General Info</h3>
+
+        <div className="">
+          <h3>General Info</h3>
+        </div>
+
         <FormField
           control={control}
           name="email"
@@ -42,23 +92,73 @@ export function Intro({ control }: { control: any }) {
         />
 
         {/* Can update this question to be a dropdown that pulls program list from uWaterloo API */}
-        <FormField
-          control={control}
-          name="program"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>What program are you in?</FormLabel>
-              <FormControl>
-                <Input placeholder="" {...field} />
-              </FormControl>
-              <FormDescription>
-                E.g., SYDE, GBDA, ARBUS
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
+        <div className="">
+          <FormField
+            control={control}
+            name="program"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block">What program are you in?</FormLabel>
+                <FormControl>
+
+                <div className="flex flex-row gap-4">
+                  {/* Program selection dropdown */}
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="w-[200px] justify-between"
+                        >
+                        {value
+                          ? programList.find((program) => program.value === value)?.value
+                          : "Select program..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search program..." />
+                        <CommandList>
+                          <CommandEmpty>No program found.</CommandEmpty>
+                          <CommandGroup>
+                            {programList.map((program) => (
+                              <CommandItem
+                              key={program.value}
+                              value={program.value}
+                              onSelect={(currentValue) => {
+                                field.onChange(currentValue === field.value ? "" : currentValue); // Update form state
+                                setValue(currentValue === value ? "" : currentValue)
+                                setOpen(false)
+                              }}
+                              onMouseEnter={() => {
+                                setCurrentProgram(program.formalName);
+                              }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    value === program.value ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                                {program.value}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <div className={`flex items-center italic text-sm text-zinc-400 transition-opacity duration-200 ${isFading ? 'opacity-100' : 'opacity-0'}`}>{currentProgram}</div>
+                </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />          
+        </div>
+       
         {/* This can also be a dropdown with options 1A, 1B, 2A... */}
         <FormField
           control={control}
