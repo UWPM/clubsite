@@ -8,14 +8,6 @@ import { formSchema } from "./formSchema"
 import { FormSubmission, TeamResponses } from "./formSchema"
 import { useState, useCallback, useEffect } from "react"
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
-
 import { Card, CardContent } from "@/components/ui/card"
 import useEmblaCarousel from "embla-carousel-react"
 
@@ -81,7 +73,7 @@ export function ProfileForm() {
       team_responses: {} as TeamResponses,
     }
     
-    console.log('values', values);
+    // console.log('values', values);
 
     // Populate the `team_responses` dynamically based on selected teams
     const teamResponses: TeamResponses = {};
@@ -207,7 +199,7 @@ export function ProfileForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 relative select-none">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 relative select-none transition-opacity">
         <div className="w-full mx-auto relative">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex">
@@ -215,6 +207,11 @@ export function ProfileForm() {
                 <div className="flex-[0_0_100%]" key={slide.id}>
                   <Card className="h-[80vh] relative m-1 rounded-xl">
                     <CardContent className="absolute inset-0 p-6 overflow-y-auto">{slide.component}</CardContent>
+
+                    <div className="absolute top-8 right-8 px-2 py-1 border border-zinc-200 rounded-md bg-zinc-50 shadow-lg">
+                      Step <strong>{index + 1}</strong> <span className="text-zinc-500">of {slides.length}</span>
+                    </div>
+                    
                     <div className="absolute bottom-4 left-4">
                       {index > 0 && (
                         <Button onClick={scrollPrev} variant="outline">
