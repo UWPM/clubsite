@@ -40,10 +40,8 @@ programs.forEach(program => {
 
 
 export function Intro({ control }: { control: any }) {
-  const [open, setOpen] = useState(false)
-  const [value, setValue] = useState("")
-  const [currentProgram, setCurrentProgram] = useState("");
   const [isFading, setIsFading] = useState(false);
+  const [currentProgram, setCurrentProgram] = useState("");
 
   useEffect(() => {
     if (currentProgram) {
@@ -91,28 +89,31 @@ export function Intro({ control }: { control: any }) {
           )}
         />
 
-        {/* Can update this question to be a dropdown that pulls program list from uWaterloo API */}
+        {/* Program dropdown */}
         <div className="">
           <FormField
             control={control}
             name="program"
-            render={({ field }) => (
+            render={({ field }) => {
+              const [openProgram, setOpenProgram] = useState(false); // Unique state for this dropdown
+              const [programValue, setProgramValue] = useState("");
+
+              return (
               <FormItem>
                 <FormLabel className="block">What program are you in?</FormLabel>
                 <FormControl>
 
                 <div className="flex flex-row gap-4">
-                  {/* Program selection dropdown */}
-                  <Popover open={open} onOpenChange={setOpen}>
+                  <Popover open={openProgram} onOpenChange={setOpenProgram}>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
                         role="combobox"
-                        aria-expanded={open}
+                        aria-expanded={openProgram}
                         className="w-[200px] justify-between"
                         >
-                        {value
-                          ? programList.find((program) => program.value === value)?.value
+                        {programValue
+                          ? programList.find((program) => program.value === programValue)?.value
                           : "Select program..."}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
@@ -129,8 +130,8 @@ export function Intro({ control }: { control: any }) {
                               value={program.value}
                               onSelect={(currentValue) => {
                                 field.onChange(currentValue === field.value ? "" : currentValue); // Update form state
-                                setValue(currentValue === value ? "" : currentValue)
-                                setOpen(false)
+                                setProgramValue(currentValue === programValue ? "" : currentValue)
+                                setOpenProgram(false)
                               }}
                               onMouseEnter={() => {
                                 setCurrentProgram(program.formalName);
@@ -139,7 +140,7 @@ export function Intro({ control }: { control: any }) {
                                 <Check
                                   className={cn(
                                     "mr-2 h-4 w-4",
-                                    value === program.value ? "opacity-100" : "opacity-0"
+                                    programValue === program.value ? "opacity-100" : "opacity-0"
                                   )}
                                 />
                                 {program.value}
@@ -155,26 +156,70 @@ export function Intro({ control }: { control: any }) {
                 </FormControl>
                 <FormMessage />
               </FormItem>
-            )}
-          />          
+            )}}
+          />        
         </div>
        
-        {/* This can also be a dropdown with options 1A, 1B, 2A... */}
+        {/* Term dropdown */}
         <FormField
           control={control}
           name="term"
-          render={({ field }) => (
+          render={({ field }) => {
+            const [termValue, setTermValue] = useState("");
+            const [openTerms, setOpenTerms] = useState(false);
+
+            return (
             <FormItem>
-              <FormLabel>What term are you in currently in or have most recently completed if on a work term?</FormLabel>
+              <FormLabel className="block">What term are you in currently in or have most recently completed if on a work term?</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Popover open={openTerms} onOpenChange={setOpenTerms}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={openTerms}
+                      className="w-[200px] justify-between"
+                      >
+                        {termValue
+                        ? terms.find((term) => term === termValue)
+                        : "Select term..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput placeholder="Search term..." />
+                      <CommandList>
+                        <CommandEmpty>No term found.</CommandEmpty>
+                        <CommandGroup>
+                            {terms.map((term) => (
+                            <CommandItem
+                              key={term}
+                              value={term}
+                              onSelect={(currentValue) => {
+                                field.onChange(currentValue === field.value ? "" : currentValue); // Update form state
+                                setTermValue(currentValue === termValue ? "" : currentValue)
+                                setOpenTerms(false)
+                              }}
+                            >
+                              <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                termValue === term ? "opacity-100" : "opacity-0"
+                              )}
+                              />
+                              {term}
+                            </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </FormControl>
-              <FormDescription>
-                E.g., 1A, 2B, 3A
-              </FormDescription>
               <FormMessage />
             </FormItem>
-          )}
+          )}}
         />
 
         {/* Radio Group */}

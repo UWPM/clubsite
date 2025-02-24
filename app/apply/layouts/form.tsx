@@ -68,7 +68,7 @@ export function ProfileForm() {
       on_campus: values.on_campus === "Yes" ? true : false,
       why_interested: values.why_interested,
       first_choice_team: values.first_choice_team,
-      second_choice_team: values.second_choice_team,
+      second_choice_team: values.second_choice_team == "I am not interested in any other team" ? undefined : values.second_choice_team,
       resume_link: values.resume_link,
       team_responses: {} as TeamResponses,
     }
@@ -214,14 +214,14 @@ export function ProfileForm() {
                     
                     <div className="absolute bottom-4 left-4">
                       {index > 0 && (
-                        <Button onClick={scrollPrev} variant="outline">
+                        <Button onClick={scrollPrev} variant="outline" type="button">
                           Previous
                         </Button>
                       )}
                     </div>
                     <div className="absolute bottom-4 right-4">
                       {index < slides.length - 1 && (
-                        <Button onClick={scrollNext} variant="outline">
+                        <Button onClick={scrollNext} variant="outline" type="button">
                           Next
                         </Button>
                       )}

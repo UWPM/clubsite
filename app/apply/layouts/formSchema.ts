@@ -25,7 +25,7 @@ export type FormSubmission = {
   on_campus: boolean;
   why_interested: string;
   first_choice_team: string;
-  second_choice_team: string;
+  second_choice_team: string | undefined;
   resume_link: string;
   team_responses: {};
 }
@@ -100,9 +100,12 @@ export const questionToText = {
   finance_time_management: "This role requires work with tight deadlines. Describe a time when you had a tight deadline for the task and how you navigated the situation",
 }
 
+export const terms = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"];
+
 export const formSchema = z.object({
   // Intro (mandatory for all applicants)
   email: z.string().regex(/.+@uwaterloo\.ca$/, { message: "Must be a valid UWaterloo email address." }),
+  // email: z.string().email({ message: "Must be a valid UWaterloo email address." }),
   full_name: z.string().nonempty({ message: "Please enter your full name." }),
   program: z.string().nonempty({ message: "Please enter your program." }),
   term: z.string().nonempty({ message: "Please enter your current term." }),
