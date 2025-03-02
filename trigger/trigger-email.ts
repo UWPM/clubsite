@@ -18,14 +18,18 @@ export const sendConfirmationEmail = task({
 
     // Send the email using Resend
     const emailResponse = await resend.emails.send({
-      from: "onboarding@resend.dev", // replace with no-reply@uwaterloopm.com eventually
+      from: "no-reply@uwaterloopm.com", // replace with no-reply@uwaterloopm.com eventually
       to: email,
       subject: "UWPM Application Confirmation",
       html: `
-        <h1>Application Received</h1>
-        <p>Hi ${fullName || "there"},</p>
-        <p>Thank you for applying to UWPM! Your application has been received. We’ll review it and get back to you soon.</p>
-        <p>Best,<br>The UWPM Team</p>
+        <html>
+          <body>
+              <h1>Application Received</h1>
+              <p>Hi ${fullName || "there"},</p>
+              <p>Thank you for applying to UWPM! Your application has been received. We’ll review it and get back to you soon.</p>
+              <p>Best,<br>The UWPM Team</p>
+          </body>
+        </html>
       `,
     });
 
