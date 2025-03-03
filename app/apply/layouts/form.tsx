@@ -4,19 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useState, useCallback, useEffect } from "react"
+import Link from "next/link"
 
 import { formSchema } from "./formSchema"
 import { FormSubmission, TeamResponses } from "./formSchema"
 
 import { Card, CardContent } from "@/components/ui/card"
 import useEmblaCarousel from "embla-carousel-react"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+
 
 import { supabase } from '../supabaseClient';
 
@@ -33,12 +28,13 @@ import { Finance } from "./form_sections/finance"
 import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import Spinner from "@/components/ui/spinner"
+import SubmissionDialog from "./dialog"
 
 export function ProfileForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(false);
-  const [email, setEmail] = useState<string | null>(null);
+  const [submissionObject, setSubmissionObject] = useState<FormSubmission | null>(null);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -153,6 +149,7 @@ export function ProfileForm() {
 
     // Attach team responses JSON to the submission data
     submission.team_responses = teamResponses;
+    setSubmissionObject(submission);
     console.log(submission);
 
     const { data: appData, error: appError } = await supabase
@@ -164,29 +161,14 @@ export function ProfileForm() {
     if (appError) {
       console.error("Error inserting data:", appError);
       setSubmitError(true);
-      setEmail(null);
     } else {
       console.log("Data inserted successfully", appData);
       setSubmitted(true);
-      setEmail(values.email);
-      
-      // trigger confirmation email via the API route
-      try {
-        const response = await fetch("/api/email", {
-          method: "GET", // GET for testing, will be POST in production
-          headers: { "Content-Type": "application/json" },
-          // body: JSON.stringify({ email: values.email, fullName: values.full_name }),
-        });
-        if (!response.ok) throw new Error("Failed to trigger email");
-        console.log("Email trigger response:", await response.json());
-      } catch (error) {
-        console.error("Error triggering email:", error);
-      }
-    }
 
     setSubmitting(false);
   }
-  
+  }
+
   // Team choice logic
   const { control, watch } = form;
   const selectedTeams = watch(["first_choice_team", "second_choice_team"]);
@@ -274,34 +256,14 @@ export function ProfileForm() {
       }
 
       {/* Dialog for submission feedback */}
-      <Dialog open={submitted || submitError} onOpenChange={(open) => {
-        if (!open) {
-          setSubmitted(false);
-          setSubmitError(false);
-        }
-      }}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{submitted ? "Submission Successful" : "Submission Failed"}</DialogTitle>
-            <DialogDescription>
-              {submitted
-                ? `Thank you for applying to UWPM! Please check your inbox (${email}) for a confirmation email.`
-                : "There was an error submitting your application. Please try again."}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="mt-4 flex justify-end">
-            <Button
-              variant={submitted ? "default" : "destructive"}
-              onClick={() => {
-                setSubmitted(false);
-                setSubmitError(false);
-              }}
-            >
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <SubmissionDialog
+        submitted={submitted}
+        submitError={submitError}
+        setSubmitted={setSubmitted}
+        setSubmitError={setSubmitError}
+        values={submissionObject}
+      />
     </>
+    
   )
 }

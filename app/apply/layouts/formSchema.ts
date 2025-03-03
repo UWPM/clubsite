@@ -74,7 +74,7 @@ export type TeamResponses = {
   };
 }
 
-export const questionToText = {
+export const questionToText: { [key: string]: string } = {
   engineering_skills: 'What relevant experiences and skills make you a good fit for the role(s)?',
   engineering_technical_challenge: 'Briefly discuss one technical challenge that you faced during a project. How did you go about overcoming it?',
   engineering_project_link: 'Please provide us a link (Devpost, Github, anything) to a project that you are proud of!',
