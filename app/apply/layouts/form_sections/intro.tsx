@@ -43,6 +43,12 @@ export function Intro({ control }: { control: any }) {
   const [isFading, setIsFading] = useState(false);
   const [currentProgram, setCurrentProgram] = useState("");
 
+  const [openProgram, setOpenProgram] = useState(false); // Unique state for program dropdown
+  const [programValue, setProgramValue] = useState("");
+
+  const [termValue, setTermValue] = useState(""); // Unique state for term dropdown
+  const [openTerms, setOpenTerms] = useState(false);
+
   useEffect(() => {
     if (currentProgram) {
       setIsFading(false);
@@ -95,8 +101,7 @@ export function Intro({ control }: { control: any }) {
             control={control}
             name="program"
             render={({ field }) => {
-              const [openProgram, setOpenProgram] = useState(false); // Unique state for this dropdown
-              const [programValue, setProgramValue] = useState("");
+
 
               return (
               <FormItem>
@@ -165,8 +170,7 @@ export function Intro({ control }: { control: any }) {
           control={control}
           name="term"
           render={({ field }) => {
-            const [termValue, setTermValue] = useState("");
-            const [openTerms, setOpenTerms] = useState(false);
+            
 
             return (
             <FormItem>
