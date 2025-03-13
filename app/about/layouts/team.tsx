@@ -214,6 +214,9 @@ const teams: Record<TeamType, TeamMember[]> = {
 export type { TeamType, TeamMember };
 export { teams };
 
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 export default function Team() {
   return (
     <section className="p-24">
@@ -238,6 +241,15 @@ export default function Team() {
             </div>
           </div>
         ))}
+      </div>
+
+      <h2 className="ml-0 mt-24">Our Alumni.</h2>
+      <div className="flex justify-center mt-12">
+        <Link href="/alumni">
+          <Button variant="default" size="default" className="px-6 py-3 text-white rounded-lg shadow-md">
+            See Our Alumni
+          </Button>
+        </Link>
       </div>
     </section>
   );
