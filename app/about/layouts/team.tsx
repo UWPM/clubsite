@@ -1,5 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
 type TeamType =
   | "Internal"
   | "Engineering"
@@ -240,6 +238,7 @@ const teams: Record<TeamType, TeamMember[]> = {
 export type { TeamType, TeamMember };
 export { teams };
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
