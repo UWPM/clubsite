@@ -273,7 +273,7 @@ export default function Team() {
         ))}
       </div>
 
-      <h2 className="ml-0 mt-24">Our Alumni.</h2>
+      <h2 className="ml-0 mt-24">Alumni</h2>
       <div className="flex justify-center mt-12">
         <Link href="/alumni">
           <Button variant="default" size="default" className="px-6 py-3 text-white rounded-lg shadow-md">

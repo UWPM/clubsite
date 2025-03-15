@@ -1,10 +1,9 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import Alumni from "./layouts/alumni";
 
-export default function Alumni() {
+export default function About() {
   return (
-    <section className="p-24">
-      <h2 className="pb-8">Our Alumni.</h2>
-    </section>
+    <>
+      <Alumni />
+    </>
   );
 }
