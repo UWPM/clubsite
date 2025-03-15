@@ -1870,38 +1870,35 @@ const alumnis: Record<Term, TeamMember[]> = {
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 export default function Alumni() {
+  const allMembers = Object.values(alumnis).flat();
+
   return (
     <section className="p-24">
       <h2 className="pb-8">Our Alumni.</h2>
       <div className="space-y-16">
-        {Object.entries(alumnis).map(([term, members]) => (
-          <div 
-            key={term} 
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-8"
-          >
-            {members.map((member) => (
-              <div
-                key={member.name}
-                className="flex flex-col items-center gap-4 text-center"
-              >
-                <div className="size-32 overflow-hidden rounded-full bg-muted-foreground">
-                  <Avatar className="h-full w-full object-cover">
-                    <AvatarImage src="/images/exec-profiles/UWPMHeadshot.png" />
-                  </Avatar>
-                </div>
-                <div>
-                  <h4 className="text-lg font-medium">{member.name}</h4>
-                  <p className="text-muted-foreground">{member.position}</p>
-                </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-8">
+          {allMembers.map((member) => (
+            <div
+              key={member.name}
+              className="flex flex-col items-center gap-4 text-center"
+            >
+              <div className="size-32 overflow-hidden rounded-full bg-muted-foreground">
+                <Avatar className="h-full w-full object-cover">
+                  <AvatarImage src="/images/exec-profiles/UWPMHeadshot.png" />
+                </Avatar>
               </div>
-            ))}
-          </div>
-        ))}
+              <div>
+                <h4 className="text-lg font-medium">{member.name}</h4>
+                <p className="text-muted-foreground">{member.position}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
-*/
+
 
 // export type { Term, TeamMember };
 // export { alumnis };
@@ -1937,38 +1934,3 @@ export default function Alumni() {
 //     </section>
 //   );
 // }
-
-
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-export { alumnis };
-
-export default function Alumni() {
-  const allMembers = Object.values(alumnis).flat();
-
-  return (
-    <section className="p-24">
-      <h2 className="pb-8">Our Alumni.</h2>
-      <div className="space-y-16">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-8">
-          {allMembers.map((member) => (
-            <div
-              key={member.name}
-              className="flex flex-col items-center gap-4 text-center"
-            >
-              <div className="size-32 overflow-hidden rounded-full bg-muted-foreground">
-                <Avatar className="h-full w-full object-cover">
-                  <AvatarImage src="/images/exec-profiles/UWPMHeadshot.png" />
-                </Avatar>
-              </div>
-              <div>
-                <h4 className="text-lg font-medium">{member.name}</h4>
-                <p className="text-muted-foreground">{member.position}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
