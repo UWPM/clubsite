@@ -1944,7 +1944,6 @@ export default function Alumni() {
 // }
 
 
-// Gaurika
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 export { alumnis };
 
