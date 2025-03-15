@@ -1867,9 +1867,6 @@ const alumnis: Record<Term, TeamMember[]> = {
   ],
 };
 
-export type { Term, TeamMember };
-export { alumnis };
-
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 export default function Alumni() {
