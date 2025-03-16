@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import dynamic from "next/dynamic";
 import NoiseSVG from "@/components/noise-svg";
+import ClientLayout from "./client-layout";
 
 const spline = Inter({
   subsets: ["latin"],
@@ -27,9 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={spline.className}>
-        <NoiseSVG />
-        <Navbar />
-        {children}
+        <ClientLayout>{children}</ClientLayout>
         {/* <Footer /> */}
         {/* <DynamicScrollToTop /> */}
       </body>

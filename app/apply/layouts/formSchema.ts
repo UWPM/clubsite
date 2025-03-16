@@ -16,6 +16,7 @@ export const handleWordCount = (e: React.ChangeEvent<HTMLTextAreaElement>, field
 };
 
 export type FormSubmission = {
+  id?: string;
   created_at: string;
   uw_email_address: string;
   full_name: string;
@@ -25,9 +26,11 @@ export type FormSubmission = {
   on_campus: boolean;
   why_interested: string;
   first_choice_team: string;
-  second_choice_team: string | undefined;
+  second_choice_team?: string | undefined;
   resume_link: string;
   team_responses: {};
+  tags?: string[] // Added for tagging functionality
+  selected?: boolean // Added for selection functionality
 }
 
 // Define the structure of the JSON column
