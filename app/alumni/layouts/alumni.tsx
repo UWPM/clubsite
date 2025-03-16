@@ -1898,39 +1898,3 @@ export default function Alumni() {
     </section>
   );
 }
-
-
-// export type { Term, TeamMember };
-// export { alumnis };
-
-// export default function Alumni() {
-//   return (
-//     <section className="p-24">
-//       <h2 className="pb-8">Our Alumni</h2>
-//       <div className="space-y-16">
-//         {Object.entries(alumnis).map(([term, members]) => (
-//           <div key={term} className="space-y-8">
-//             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-//               {members.map((member) => (
-//                 <div
-//                   key={member.name}
-//                   className="flex flex-col items-center gap-4 text-center"
-//                 >
-//                   <div className="size-36 overflow-hidden rounded-full bg-muted-foreground">
-//                     <Avatar className="h-full w-full object-cover">
-//                       <AvatarImage src="/images/exec-profiles/UWPMHeadshot.png" />
-//                     </Avatar>
-//                   </div>
-//                   <div>
-//                     <h4 className="text-lg font-medium">{member.name}</h4>
-//                     <p className="text-muted-foreground">{member.position}</p>
-//                   </div>
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </section>
-//   );
-// }
