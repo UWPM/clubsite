@@ -28,7 +28,7 @@ export type FormSubmission = {
   first_choice_team: string;
   second_choice_team?: string | undefined;
   resume_link: string;
-  team_responses: {};
+  team_responses: TeamResponses;
   tags?: string[] // Added for tagging functionality
   selected?: boolean // Added for selection functionality
 }

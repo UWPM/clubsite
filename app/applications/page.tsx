@@ -5,9 +5,12 @@ import { TeamSidebar } from "./layouts/team-sidebar";
 import { ApplicantView } from "./layouts/applicant-view";
 import { SelectedApplicantsView } from "./layouts/selected-applicants-view";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { type TeamResponses } from "../apply/layouts/formSchema";
+
+type TeamId = keyof TeamResponses;
 
 export default function ClubApplications() {
-  const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<TeamId | null>(null);
   const [view, setView] = useState<"all" | "selected">("all");
 
   return (

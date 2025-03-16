@@ -126,7 +126,7 @@ The ${teamName} Team`);
                 onChange={(e) => setMessage(e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
-                Use [Applicant Name] as a placeholder for the applicant's name.
+                Use [Applicant Name] as a placeholder for the applicant&apos;s name.
               </p>
             </div>
           </TabsContent>
@@ -148,7 +148,7 @@ The ${teamName} Team`);
                 onChange={(e) => setMessage(e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
-                Use [Applicant Name] as a placeholder for the applicant's name.
+                Use [Applicant Name] as a placeholder for the applicant&apos;s name.
               </p>
             </div>
           </TabsContent>

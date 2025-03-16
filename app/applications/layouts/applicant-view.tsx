@@ -1,109 +1,149 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { ChevronLeft, ChevronRight, Check, X, ExternalLink, Calendar, FileText } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ApplicantTags } from "./applicant-tags"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { MOCK_APPLICANTS, TEAMS } from "../example-data"
-import { type FormSubmission, questionToText } from "../../apply/layouts/formSchema"
+import { useState, useEffect } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  X,
+  ExternalLink,
+  Calendar,
+  FileText,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ApplicantTags } from "./applicant-tags";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { MOCK_APPLICANTS, TEAMS } from "../example-data";
+import {
+  type FormSubmission,
+  questionToText,
+  type TeamResponses,
+} from "../../apply/layouts/formSchema";
+
+type TeamId = keyof TeamResponses;
 
 interface ApplicantViewProps {
-  teamId: string
+  teamId: TeamId;
 }
 
 export function ApplicantView({ teamId }: ApplicantViewProps) {
-  const [applicants, setApplicants] = useState<FormSubmission[]>([])
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [filterStatus, setFilterStatus] = useState<string>("all")
+  const [applicants, setApplicants] = useState<FormSubmission[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [filterStatus, setFilterStatus] = useState<string>("all");
 
   useEffect(() => {
     // Reset to first applicant when team changes
-    setCurrentIndex(0)
+    setCurrentIndex(0);
 
     // Get applicants for the selected team
-    const teamApplicants = MOCK_APPLICANTS[teamId] || []
-    setApplicants(teamApplicants)
-  }, [teamId])
+    const teamApplicants = MOCK_APPLICANTS[teamId] || [];
+    setApplicants(teamApplicants);
+  }, [teamId]);
 
   const filteredApplicants = applicants.filter((applicant) => {
-    if (filterStatus === "all") return true
-    if (filterStatus === "selected") return applicant.selected
-    if (filterStatus === "not-selected") return !applicant.selected
-    return true
-  })
+    if (filterStatus === "all") return true;
+    if (filterStatus === "selected") return applicant.selected;
+    if (filterStatus === "not-selected") return !applicant.selected;
+    return true;
+  });
 
-  const currentApplicant = filteredApplicants[currentIndex]
+  const currentApplicant = filteredApplicants[currentIndex];
 
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : 0))
-  }
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : 0));
+  };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev < filteredApplicants.length - 1 ? prev + 1 : prev))
-  }
+    setCurrentIndex((prev) =>
+      prev < filteredApplicants.length - 1 ? prev + 1 : prev,
+    );
+  };
 
   const handleToggleSelection = () => {
-    if (!currentApplicant) return
+    if (!currentApplicant) return;
 
     setApplicants((prev) =>
       prev.map((applicant) =>
-        applicant.id === currentApplicant.id ? { ...applicant, selected: !applicant.selected } : applicant,
+        applicant.id === currentApplicant.id
+          ? { ...applicant, selected: !applicant.selected }
+          : applicant,
       ),
-    )
-  }
+    );
+  };
 
   const handleAddTag = (tag: string) => {
-    if (!currentApplicant) return
+    if (!currentApplicant) return;
 
     setApplicants((prev) =>
       prev.map((applicant) =>
         applicant.id === currentApplicant.id
           ? {
               ...applicant,
-              tags: [...(applicant.tags || []), tag].filter((v, i, a) => a.indexOf(v) === i),
+              tags: [...(applicant.tags || []), tag].filter(
+                (v, i, a) => a.indexOf(v) === i,
+              ),
             }
           : applicant,
       ),
-    )
-  }
+    );
+  };
 
   const handleRemoveTag = (tag: string) => {
-    if (!currentApplicant) return
+    if (!currentApplicant) return;
 
     setApplicants((prev) =>
       prev.map((applicant) =>
         applicant.id === currentApplicant.id
-          ? { ...applicant, tags: (applicant.tags || []).filter((t) => t !== tag) }
+          ? {
+              ...applicant,
+              tags: (applicant.tags || []).filter((t) => t !== tag),
+            }
           : applicant,
       ),
-    )
-  }
+    );
+  };
 
   if (!currentApplicant) {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="max-w-md text-center">
           <h2 className="text-2xl font-bold">No Applicants</h2>
-          <p className="mt-2 text-muted-foreground">There are no applicants for this team yet</p>
+          <p className="mt-2 text-muted-foreground">
+            There are no applicants for this team yet
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   // Get team-specific responses
-  const teamResponses = currentApplicant.team_responses[teamId] || {}
+  const teamResponses = currentApplicant.team_responses[teamId] || {};
 
   return (
     <div className="container mx-auto py-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{TEAMS.find((team) => team.id === teamId)?.name} Team Applications</h1>
+          <h1 className="text-2xl font-bold">
+            {TEAMS.find((team) => team.id === teamId)?.name} Team Applications
+          </h1>
           <p className="text-muted-foreground">
-            {filteredApplicants.length} applicants • {applicants.filter((a) => a.selected).length} selected
+            {filteredApplicants.length} applicants •{" "}
+            {applicants.filter((a) => a.selected).length} selected
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -122,8 +162,13 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
 
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handlePrevious} disabled={currentIndex === 0}>
-            <ChevronLeft className="h-4 w-4 mr-1" /> Previous
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrevious}
+            disabled={currentIndex === 0}
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" /> Previous
           </Button>
           <Button
             variant="outline"
@@ -131,9 +176,9 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
             onClick={handleNext}
             disabled={currentIndex === filteredApplicants.length - 1}
           >
-            Next <ChevronRight className="h-4 w-4 ml-1" />
+            Next <ChevronRight className="ml-1 h-4 w-4" />
           </Button>
-          <span className="text-sm text-muted-foreground ml-2">
+          <span className="ml-2 text-sm text-muted-foreground">
             {currentIndex + 1} of {filteredApplicants.length}
           </span>
         </div>
@@ -153,14 +198,17 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
               </Avatar>
               <CardTitle>{currentApplicant.full_name}</CardTitle>
             </div>
-            <Button variant={currentApplicant.selected ? "destructive" : "default"} onClick={handleToggleSelection}>
+            <Button
+              variant={currentApplicant.selected ? "destructive" : "default"}
+              onClick={handleToggleSelection}
+            >
               {currentApplicant.selected ? (
                 <>
-                  <X className="h-4 w-4 mr-2" /> Remove Selection
+                  <X className="mr-2 h-4 w-4" /> Remove Selection
                 </>
               ) : (
                 <>
-                  <Check className="h-4 w-4 mr-2" /> Select Applicant
+                  <Check className="mr-2 h-4 w-4" /> Select Applicant
                 </>
               )}
             </Button>
@@ -168,7 +216,11 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
 
           <div className="mt-2 flex flex-wrap gap-1">
             {(currentApplicant.tags || []).map((tag) => (
-              <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+              <Badge
+                key={tag}
+                variant="secondary"
+                className="flex items-center gap-1"
+              >
                 {tag}
                 <Button
                   variant="ghost"
@@ -180,55 +232,60 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
                 </Button>
               </Badge>
             ))}
-            <ApplicantTags currentTags={currentApplicant.tags || []} onAddTag={handleAddTag} />
+            <ApplicantTags
+              currentTags={currentApplicant.tags || []}
+              onAddTag={handleAddTag}
+            />
           </div>
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-medium mb-1">Email</h3>
+                <h3 className="mb-1 text-sm font-medium">Email</h3>
                 <p className="text-sm">{currentApplicant.uw_email_address}</p>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium mb-1">Program</h3>
+                <h3 className="mb-1 text-sm font-medium">Program</h3>
                 <p className="text-sm">{currentApplicant.program}</p>
               </div>
 
               <div className="flex gap-6">
                 <div>
-                  <h3 className="text-sm font-medium mb-1">Term</h3>
+                  <h3 className="mb-1 text-sm font-medium">Term</h3>
                   <p className="text-sm">{currentApplicant.term}</p>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium mb-1">Term Type</h3>
+                  <h3 className="mb-1 text-sm font-medium">Term Type</h3>
                   <p className="text-sm">{currentApplicant.term_type}</p>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium mb-1">On Campus</h3>
-                  <p className="text-sm">{currentApplicant.on_campus ? "Yes" : "No"}</p>
+                  <h3 className="mb-1 text-sm font-medium">On Campus</h3>
+                  <p className="text-sm">
+                    {currentApplicant.on_campus ? "Yes" : "No"}
+                  </p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium mb-1">Applied On</h3>
-                <p className="text-sm flex items-center gap-1">
+                <h3 className="mb-1 text-sm font-medium">Applied On</h3>
+                <p className="flex items-center gap-1 text-sm">
                   <Calendar className="h-3 w-3" />
                   {new Date(currentApplicant.created_at).toLocaleDateString()}
                 </p>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium mb-1">Resume</h3>
+                <h3 className="mb-1 text-sm font-medium">Resume</h3>
                 <a
                   href={currentApplicant.resume_link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm flex items-center gap-1 text-blue-600 hover:underline"
+                  className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
                 >
                   <FileText className="h-3 w-3" />
                   View Resume <ExternalLink className="h-3 w-3" />
@@ -236,11 +293,23 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
               </div>
 
               <div>
-                <h3 className="text-sm font-medium mb-1">Team Preferences</h3>
+                <h3 className="mb-1 text-sm font-medium">Team Preferences</h3>
                 <p className="text-sm">
-                  1st Choice: {TEAMS.find((t) => t.id === currentApplicant.first_choice_team)?.name}
+                  1st Choice:{" "}
+                  {
+                    TEAMS.find(
+                      (t) => t.id === currentApplicant.first_choice_team,
+                    )?.name
+                  }
                   {currentApplicant.second_choice_team && (
-                    <>, 2nd Choice: {TEAMS.find((t) => t.id === currentApplicant.second_choice_team)?.name}</>
+                    <>
+                      , 2nd Choice:{" "}
+                      {
+                        TEAMS.find(
+                          (t) => t.id === currentApplicant.second_choice_team,
+                        )?.name
+                      }
+                    </>
                   )}
                 </p>
               </div>
@@ -248,16 +317,22 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
 
             <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-medium mb-1">Why Interested</h3>
-                <p className="text-sm whitespace-pre-line">{currentApplicant.why_interested}</p>
+                <h3 className="mb-1 text-sm font-medium">Why Interested</h3>
+                <p className="whitespace-pre-line text-sm">
+                  {currentApplicant.why_interested}
+                </p>
               </div>
 
               {Object.entries(teamResponses)
                 .filter(([key]) => key !== "choice_num")
                 .map(([key, value]) => (
                   <div key={key}>
-                    <h3 className="text-sm font-medium mb-1">{questionToText[key] || key}</h3>
-                    <p className="text-sm whitespace-pre-line">{value as string}</p>
+                    <h3 className="mb-1 text-sm font-medium">
+                      {questionToText[key] || key}
+                    </h3>
+                    <p className="whitespace-pre-line text-sm">
+                      {value as string}
+                    </p>
                   </div>
                 ))}
             </div>
@@ -265,10 +340,15 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
         </CardContent>
 
         <CardFooter className="border-t pt-4">
-          <div className="flex justify-between w-full">
+          <div className="flex w-full justify-between">
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handlePrevious} disabled={currentIndex === 0}>
-                <ChevronLeft className="h-4 w-4 mr-1" /> Previous
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePrevious}
+                disabled={currentIndex === 0}
+              >
+                <ChevronLeft className="mr-1 h-4 w-4" /> Previous
               </Button>
               <Button
                 variant="outline"
@@ -276,7 +356,7 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
                 onClick={handleNext}
                 disabled={currentIndex === filteredApplicants.length - 1}
               >
-                Next <ChevronRight className="h-4 w-4 ml-1" />
+                Next <ChevronRight className="ml-1 h-4 w-4" />
               </Button>
             </div>
             <Button
@@ -284,12 +364,13 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
               size="sm"
               onClick={handleToggleSelection}
             >
-              {currentApplicant.selected ? "Remove Selection" : "Select Applicant"}
+              {currentApplicant.selected
+                ? "Remove Selection"
+                : "Select Applicant"}
             </Button>
           </div>
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
-

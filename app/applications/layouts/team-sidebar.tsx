@@ -16,10 +16,13 @@ import {
 } from "@/components/ui/sidebar";
 import { useState } from "react";
 import { TEAMS, MOCK_APPLICANTS } from "../example-data";
+import { type TeamResponses } from "../../apply/layouts/formSchema";
+
+type TeamId = keyof TeamResponses;
 
 interface TeamSidebarProps {
-  onSelectTeam: (teamId: string) => void;
-  selectedTeam: string | null;
+  onSelectTeam: (teamId: TeamId) => void;
+  selectedTeam: TeamId | null;
   onChangeView: (view: "all" | "selected") => void;
   currentView: "all" | "selected";
 }
@@ -36,10 +39,20 @@ export function TeamSidebar({
     team.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
+  // Initialize selectedCounts with all team IDs set to 0
+  const selectedCounts = TEAMS.reduce(
+    (acc, team) => {
+      acc[team.id as TeamId] = 0;
+      return acc;
+    },
+    {} as Record<TeamId, number>,
+  );
+
   // Count selected applicants for each team
-  const selectedCounts: Record<string, number> = {};
   Object.entries(MOCK_APPLICANTS).forEach(([teamId, applicants]) => {
-    selectedCounts[teamId] = applicants.filter((a) => a.selected).length;
+    selectedCounts[teamId as TeamId] = applicants.filter(
+      (a) => a.selected,
+    ).length;
   });
 
   return (
@@ -93,13 +106,13 @@ export function TeamSidebar({
             <SidebarMenu>
               {filteredTeams.map((team) => {
                 const applicantCount = MOCK_APPLICANTS[team.id]?.length || 0;
-                const selectedCount = selectedCounts[team.id] || 0;
+                const selectedCount = selectedCounts[team.id as TeamId];
 
                 return (
                   <SidebarMenuItem key={team.id}>
                     <SidebarMenuButton
                       isActive={selectedTeam === team.id}
-                      onClick={() => onSelectTeam(team.id)}
+                      onClick={() => onSelectTeam(team.id as TeamId)}
                     >
                       <Users className="h-4 w-4" />
                       <span>{team.name}</span>

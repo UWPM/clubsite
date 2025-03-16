@@ -1,6 +1,8 @@
-import { FormSubmission } from "../apply/layouts/formSchema"
+import { FormSubmission, type TeamResponses } from "../apply/layouts/formSchema"
 
-export const TEAMS = [
+type TeamId = keyof TeamResponses;
+
+export const TEAMS: { id: TeamId; name: string }[] = [
     { id: "engineering", name: "Engineering" },
     { id: "events", name: "Events" },
     { id: "marketing", name: "Marketing" },
@@ -11,7 +13,7 @@ export const TEAMS = [
   ]
   
   // Mock data for applicants
-  export const MOCK_APPLICANTS: { [key: string]: FormSubmission[] } = {
+  export const MOCK_APPLICANTS: { [key in TeamId]?: FormSubmission[] } = {
     engineering: [
       {
         id: "1",
@@ -149,6 +151,8 @@ export const TEAMS = [
         team_responses: {
           outreach: {
             choice_num: 1,
+            director_applicant: false,
+            lead_applicant: true,
             outreach_skills:
               "I have experience in partnership development, email outreach, and relationship management. I've worked with local businesses and campus organizations to secure sponsorships and collaborations.",
             outreach_experience:
