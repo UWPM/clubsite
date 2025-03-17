@@ -69,6 +69,44 @@ The ${teamName} Team`);
 
   const handleSendEmails = async () => {
     setSending(true);
+  
+    try {
+      // send emails to all selected applicants
+      for (const applicant of selectedApplicants) {
+        const personalizedMessage = message.replace("[Applicant Name]", applicant.name);
+  
+        await fetch("/api/email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: applicant.email,
+            fullName: applicant.name,
+            responses: {
+              subject,
+              message: personalizedMessage,
+            },
+          }),
+        });
+      }
+  
+      // Show success message
+      setSent(true);
+      console.log("Emails sent successfully!");
+  
+      // Reset after 3 seconds
+      setTimeout(() => {
+        setSent(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error sending emails:", error);
+    } finally {
+      setSending(false);
+    }
+  };
+  
+  /*
+  const handleSendEmails = async () => {
+    setSending(true);
 
     // Simulate sending emails
     await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -81,6 +119,7 @@ The ${teamName} Team`);
       setSent(false);
     }, 3000);
   };
+  */
 
   return (
     <Dialog>
