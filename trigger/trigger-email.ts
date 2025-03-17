@@ -2,6 +2,10 @@ import { logger, task } from "@trigger.dev/sdk/v3";
 import { Resend } from "resend";
 import { questionToText } from "@/app/apply/layouts/formSchema";
 
+if (!process.env.RESEND_API_KEY) {
+  throw new Error("Missing RESEND_API_KEY. Set it in your environment variables.");
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface EmailPayload {
