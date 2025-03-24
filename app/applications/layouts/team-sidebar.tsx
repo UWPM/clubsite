@@ -15,8 +15,11 @@ import {
   SidebarMenuBadge,
 } from "@/components/ui/sidebar";
 import { useState } from "react";
-import { TEAMS, MOCK_APPLICANTS } from "../example-data";
-import { type TeamResponses } from "../../apply/layouts/formSchema";
+import { TEAMS } from "../get-applications";
+import {
+  type TeamResponses,
+  type FormSubmission,
+} from "../../apply/layouts/formSchema";
 
 type TeamId = keyof TeamResponses;
 
@@ -25,13 +28,17 @@ interface TeamSidebarProps {
   selectedTeam: TeamId | null;
   onChangeView: (view: "all" | "selected") => void;
   currentView: "all" | "selected";
+  applications: { [key in TeamId]?: FormSubmission[] };
 }
+
+console.log(TEAMS);
 
 export function TeamSidebar({
   onSelectTeam,
   selectedTeam,
   onChangeView,
   currentView,
+  applications,
 }: TeamSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -49,7 +56,7 @@ export function TeamSidebar({
   );
 
   // Count selected applicants for each team
-  Object.entries(MOCK_APPLICANTS).forEach(([teamId, applicants]) => {
+  Object.entries(applications).forEach(([teamId, applicants]) => {
     selectedCounts[teamId as TeamId] = applicants.filter(
       (a) => a.selected,
     ).length;
@@ -105,7 +112,7 @@ export function TeamSidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               {filteredTeams.map((team) => {
-                const applicantCount = MOCK_APPLICANTS[team.id]?.length || 0;
+                const applicantCount = applications[team.id]?.length || 0;
                 const selectedCount = selectedCounts[team.id as TeamId];
 
                 return (
