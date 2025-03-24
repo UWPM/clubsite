@@ -78,7 +78,7 @@ export const TEAMS: { id: TeamId; name: string }[] = [
       {
         id: "3",
         created_at: "2023-10-14T09:15:00Z",
-        uw_email_address: "jordan@uwaterloo.ca",
+        uw_email_address: "a4ojha@uwaterloo.ca",
         full_name: "Jordan Lee",
         program: "Business Administration",
         term: "4A",

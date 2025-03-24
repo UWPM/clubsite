@@ -2,47 +2,82 @@ import { logger, task } from "@trigger.dev/sdk/v3";
 import { Resend } from "resend";
 import { questionToText } from "@/app/apply/layouts/formSchema";
 
+// console.log("RESEND_API_KEY: ", process.env.RESEND_API_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-interface EmailPayload {
+interface BaseEmailPayload {
   email: string;
-  fullName?: string; // maybe: include user’s full name to personalize the email
-  responses?: any; // include user’s responses to the application questions
+  fullName?: string;
 }
+
+interface ApplicationConfirmationPayload extends BaseEmailPayload {
+  type: "confirmation";
+  responses: {
+    term: string;
+    program: string;
+    term_type: string;
+    on_campus: boolean;
+    resume_link: string;
+    why_interested: string;
+    first_choice_team: string;
+    second_choice_team?: string;
+    team_responses: Record<string, Record<string, string>>;
+  };
+}
+
+interface ResultEmailPayload extends BaseEmailPayload {
+  type: "result";
+  responses: {
+    subject: string;
+    message: string;
+  };
+}
+
+type EmailPayload = ApplicationConfirmationPayload | ResultEmailPayload;
 
 export const sendConfirmationEmail = task({
   id: "send-confirmation-email",
-  maxDuration: 300, // 5 minutes max execution time (maxDuration is in seconds)
+  maxDuration: 300, // 5 minutes max execution time
   run: async (payload: EmailPayload, { ctx }) => {
-    const { email, fullName, responses } = payload;
+    const { email, fullName, type, responses } = payload;
 
-    logger.log("Sending confirmation email", { email, fullName, responses, ctx });
+    logger.log("Sending email", { email, fullName, type, responses, ctx });
+
+    let emailContent;
+    let emailSubject;
+
+    if (type === "confirmation") {
+      emailSubject = "UWPM Application Confirmation";
+      emailContent = createConfirmationEmailTemplate(fullName, responses);
+    } else {
+      emailSubject = responses.subject;
+      emailContent = responses.message;
+    }
 
     // Send the email using Resend
     const emailResponse = await resend.emails.send({
-      from: "no-reply@uwaterloopm.com", // replace with no-reply@uwaterloopm.com eventually
+      from: "no-reply@uwaterloopm.com",
       to: email,
-      subject: "UWPM Application Confirmation",
-      html: createEmailTemplate(fullName, responses),
+      subject: emailSubject,
+      html: emailContent,
     });
 
     logger.log("Email sent", { emailResponse });
 
     return {
-      message: `Confirmation email sent to ${email}`,
+      message: `Email sent to ${email}`,
       emailResponse,
     };
   },
 });
 
-
-const createEmailTemplate = (fullName: string | undefined, responses: any) => {
+const createConfirmationEmailTemplate = (fullName: string | undefined, responses: ApplicationConfirmationPayload["responses"]) => {
   let email = `
     <html>
       <body>
           <h1>UWPM Application Received</h1>
           <p>Hi ${fullName || "there"},</p>
-          <p>Thank you for applying to UWPM! Your application has been received. We’ll review it and get back to you soon.</p>
+          <p>Thank you for applying to UWPM! Your application has been received. We'll review it and get back to you soon.</p>
   `;
 
   // Include responses if available
@@ -80,7 +115,7 @@ const createEmailTemplate = (fullName: string | undefined, responses: any) => {
     responseSection += '</div>'
 
     // second choice team
-    if (Object.keys(responses.team_responses).length == 2) {
+    if (Object.keys(responses.team_responses).length == 2 && responses.second_choice_team) {
       responseSection += '<br>'
       let second_team = responses.second_choice_team.toLowerCase();
       responseSection += `<div>
@@ -104,6 +139,5 @@ const createEmailTemplate = (fullName: string | undefined, responses: any) => {
     </html>
   `;
 
-  console.log(email);
   return email;
 }
