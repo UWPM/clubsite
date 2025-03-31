@@ -31,8 +31,6 @@ interface TeamSidebarProps {
   applications: { [key in TeamId]?: FormSubmission[] };
 }
 
-console.log(TEAMS);
-
 export function TeamSidebar({
   onSelectTeam,
   selectedTeam,
