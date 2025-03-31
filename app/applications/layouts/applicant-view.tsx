@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -28,34 +28,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MOCK_APPLICANTS, TEAMS } from "../example-data";
+import { TEAMS } from "../get-applications";
 import {
   type FormSubmission,
   questionToText,
   type TeamResponses,
 } from "../../apply/layouts/formSchema";
+import { supabase } from "../../apply/supabaseClient";
 
 type TeamId = keyof TeamResponses;
 
 interface ApplicantViewProps {
   teamId: TeamId;
+  applications: { [key in TeamId]?: FormSubmission[] };
+  onToggleSelection: (applicantId: string, selected: boolean) => Promise<void>;
 }
 
-export function ApplicantView({ teamId }: ApplicantViewProps) {
-  const [applicants, setApplicants] = useState<FormSubmission[]>([]);
+export function ApplicantView({
+  teamId,
+  applications,
+  onToggleSelection,
+}: ApplicantViewProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [filterStatus, setFilterStatus] = useState<string>("all");
 
-  useEffect(() => {
-    // Reset to first applicant when team changes
-    setCurrentIndex(0);
+  const teamApplicants = applications[teamId] || [];
 
-    // Get applicants for the selected team
-    const teamApplicants = MOCK_APPLICANTS[teamId] || [];
-    setApplicants(teamApplicants);
-  }, [teamId]);
-
-  const filteredApplicants = applicants.filter((applicant) => {
+  const filteredApplicants = teamApplicants.filter((applicant) => {
     if (filterStatus === "all") return true;
     if (filterStatus === "selected") return applicant.selected;
     if (filterStatus === "not-selected") return !applicant.selected;
@@ -74,48 +73,20 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
     );
   };
 
-  const handleToggleSelection = () => {
+  const handleToggleSelection = async () => {
     if (!currentApplicant) return;
-
-    setApplicants((prev) =>
-      prev.map((applicant) =>
-        applicant.id === currentApplicant.id
-          ? { ...applicant, selected: !applicant.selected }
-          : applicant,
-      ),
-    );
+    const newSelectedState = !currentApplicant.selected;
+    await onToggleSelection(currentApplicant.id!, newSelectedState);
   };
 
   const handleAddTag = (tag: string) => {
     if (!currentApplicant) return;
-
-    setApplicants((prev) =>
-      prev.map((applicant) =>
-        applicant.id === currentApplicant.id
-          ? {
-              ...applicant,
-              tags: [...(applicant.tags || []), tag].filter(
-                (v, i, a) => a.indexOf(v) === i,
-              ),
-            }
-          : applicant,
-      ),
-    );
+    // TODO: Implement tag persistence
   };
 
   const handleRemoveTag = (tag: string) => {
     if (!currentApplicant) return;
-
-    setApplicants((prev) =>
-      prev.map((applicant) =>
-        applicant.id === currentApplicant.id
-          ? {
-              ...applicant,
-              tags: (applicant.tags || []).filter((t) => t !== tag),
-            }
-          : applicant,
-      ),
-    );
+    // TODO: Implement tag persistence
   };
 
   if (!currentApplicant) {
@@ -139,11 +110,16 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">
-            {TEAMS.find((team) => team.id === teamId)?.name} Team Applications
+            {
+              TEAMS.find(
+                (team) => team.id.toLowerCase() === teamId.toLowerCase(),
+              )?.name
+            }{" "}
+            Team Applications
           </h1>
           <p className="text-muted-foreground">
             {filteredApplicants.length} applicants •{" "}
-            {applicants.filter((a) => a.selected).length} selected
+            {teamApplicants.filter((a) => a.selected).length} selected
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -298,7 +274,9 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
                   1st Choice:{" "}
                   {
                     TEAMS.find(
-                      (t) => t.id === currentApplicant.first_choice_team,
+                      (t) =>
+                        t.id ===
+                        currentApplicant.first_choice_team.toLowerCase(),
                     )?.name
                   }
                   {currentApplicant.second_choice_team && (
@@ -306,7 +284,9 @@ export function ApplicantView({ teamId }: ApplicantViewProps) {
                       , 2nd Choice:{" "}
                       {
                         TEAMS.find(
-                          (t) => t.id === currentApplicant.second_choice_team,
+                          (t) =>
+                            t.id ===
+                            currentApplicant.second_choice_team?.toLowerCase(),
                         )?.name
                       }
                     </>

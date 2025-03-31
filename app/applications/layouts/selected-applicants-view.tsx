@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { MOCK_APPLICANTS, TEAMS } from "../example-data";
+import { TEAMS } from "../get-applications";
 import {
   type FormSubmission,
   type TeamResponses,
@@ -19,10 +19,14 @@ type TeamId = keyof TeamResponses;
 
 interface SelectedApplicantsViewProps {
   teamId: TeamId;
+  applications: { [key in TeamId]?: FormSubmission[] };
+  onToggleSelection: (applicantId: string, selected: boolean) => Promise<void>;
 }
 
 export function SelectedApplicantsView({
   teamId,
+  applications,
+  onToggleSelection,
 }: SelectedApplicantsViewProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
@@ -31,12 +35,14 @@ export function SelectedApplicantsView({
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   // Get selected applicants for the team
-  const allApplicants = MOCK_APPLICANTS[teamId] || [];
-  const selectedApplicants = allApplicants.filter((a) => a.selected);
+  const allApplicants = applications[teamId] || [];
+  const selectedApplicants = allApplicants.filter(
+    (a: FormSubmission) => a.selected,
+  );
 
   // Filter by search query
   const filteredApplicants = selectedApplicants.filter(
-    (applicant) =>
+    (applicant: FormSubmission) =>
       applicant.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       applicant.uw_email_address
         .toLowerCase()
@@ -54,7 +60,13 @@ export function SelectedApplicantsView({
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">
-            Selected {TEAMS.find((team) => team.id === teamId)?.name} Applicants
+            Selected{" "}
+            {
+              TEAMS.find(
+                (team) => team.id.toLowerCase() === teamId.toLowerCase(),
+              )?.name
+            }{" "}
+            Applicants
           </h1>
           <p className="text-muted-foreground">
             {selectedApplicants.length} selected applicants
@@ -96,7 +108,7 @@ export function SelectedApplicantsView({
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredApplicants.map((applicant) => (
+          {filteredApplicants.map((applicant: FormSubmission) => (
             <Card
               key={applicant.id}
               className="cursor-pointer transition-shadow hover:shadow-md"
@@ -108,7 +120,7 @@ export function SelectedApplicantsView({
                     <AvatarFallback>
                       {applicant.full_name
                         .split(" ")
-                        .map((n) => n[0])
+                        .map((n: string) => n[0])
                         .join("")}
                     </AvatarFallback>
                   </Avatar>
@@ -138,7 +150,7 @@ export function SelectedApplicantsView({
                   </p>
 
                   <div className="mt-2 flex flex-wrap gap-1">
-                    {(applicant.tags || []).slice(0, 3).map((tag) => (
+                    {(applicant.tags || []).slice(0, 3).map((tag: string) => (
                       <Badge key={tag} variant="secondary" className="text-xs">
                         {tag}
                       </Badge>
@@ -169,6 +181,7 @@ export function SelectedApplicantsView({
           onClose={() => setIsDetailModalOpen(false)}
           applicant={selectedApplicant}
           teamId={teamId}
+          onToggleSelection={onToggleSelection}
         />
       )}
     </div>
