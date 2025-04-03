@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
   if (subdomain !== 'applications' && pathname === '/') {
     return NextResponse.redirect(new URL('/home', request.url));
   }
-  // Authentical for /applications
+  // Authentication for /applications
   if (pathname.startsWith("/applications")) {
     const token = request.cookies.get("auth_token")
     if (!token) {
