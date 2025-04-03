@@ -17,7 +17,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const values = [
   {
@@ -59,10 +59,10 @@ const values = [
 ];
 
 export default function Values() {
-  const plugin = useRef(
-    Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
+  const [api] = useState(() =>
+    Autoplay({ delay: 3500, stopOnInteraction: false }),
   );
-  
+
   return (
     <section className="space-y-6 py-24">
       <h2 className="mx-24">Our values.</h2>
@@ -73,7 +73,7 @@ export default function Values() {
             dragFree: true,
             align: "start",
           }}
-          plugins={[plugin.current]}
+          plugins={[api]}
         >
           <CarouselContent className="-ml-6">
             {values.map((card, index) => (

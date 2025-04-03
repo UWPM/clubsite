@@ -25,7 +25,7 @@ export default function Navbar() {
           </SheetContent>
         </Sheet>
       </div>
-      <div className="fixed bottom-12 left-1/2 z-[1000] mx-auto -translate-x-1/2 rounded-full bg-secondary/60 shadow-lg backdrop-blur-sm transition duration-300 ease-in-out hover:border-accent-foreground">
+      <div className="fixed bottom-12 left-1/2 z-[10] mx-auto -translate-x-1/2 rounded-full bg-secondary/60 shadow-lg backdrop-blur-sm transition duration-300 ease-in-out hover:border-accent-foreground">
         <ul className="flex gap-1 p-1">
           <Link href="/home">
             <li
