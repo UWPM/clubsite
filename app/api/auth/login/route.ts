@@ -28,6 +28,10 @@ export async function POST(req: Request) {
       { error: "Invalid password" },
       { status: 401 },
     );
+    response.cookies.set("auth_token", "", {
+      expires: new Date(0),
+      httpOnly: true,
+    }); // Expire the cookie
     return response;
   }
 
