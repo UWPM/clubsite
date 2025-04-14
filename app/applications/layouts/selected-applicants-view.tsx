@@ -150,14 +150,9 @@ export function SelectedApplicantsView({
                   </p>
 
                   <div className="mt-2 flex flex-wrap gap-1">
-                    {(applicant.tags || []).slice(0, 3).map((tag: string) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                    {(applicant.tags || []).length > 3 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{(applicant.tags || []).length - 3} more
+                    {applicant.tag && (
+                      <Badge variant="secondary" className="text-xs">
+                      {applicant.tag}
                       </Badge>
                     )}
                   </div>

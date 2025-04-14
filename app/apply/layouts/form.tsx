@@ -81,6 +81,7 @@ export function ProfileForm() {
       second_choice_team: values.second_choice_team == "I am not interested in any other team" ? undefined : values.second_choice_team,
       resume_link: values.resume_link,
       team_responses: {} as TeamResponses,
+      tag: null
     }
     
     // Populate the `team_responses` dynamically based on selected teams

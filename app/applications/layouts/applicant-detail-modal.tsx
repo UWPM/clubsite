@@ -77,11 +77,11 @@ export function ApplicantDetailModal({
           </div>
 
           <div className="mt-2 flex flex-wrap gap-1">
-            {(applicant.tags || []).map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
+            {applicant.tag && (
+              <Badge variant="secondary">
+                {applicant.tag}
               </Badge>
-            ))}
+            )}
           </div>
         </DialogHeader>
 
