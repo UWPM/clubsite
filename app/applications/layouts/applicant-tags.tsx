@@ -1,109 +1,82 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Tag } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { useState } from "react";
+import { Tag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { supabase } from "@/app/apply/supabaseClient";
 
-// Common tags that might be used across applicants
-const COMMON_TAGS = [
-  "experienced",
-  "junior",
-  "mid-level",
-  "senior",
-  "frontend",
-  "backend",
-  "fullstack",
-  "ui-ux",
-  "graphic",
-  "content",
-  "social-media",
-  "organized",
-  "detail-oriented",
-  "creative",
-  "analytical",
-  "communication",
-  "networking",
-  "technical",
-  "promising",
-  "needs-followup",
-  "strong-culture-fit",
-  "leadership",
-  "teamwork",
-]
+// Define the allowed tags with their colors
+const STATUS_TAGS = [
+  { name: "Reject", color: "bg-red-500 hover:bg-red-600" },
+  { name: "Review", color: "bg-yellow-500 hover:bg-yellow-600" },
+  { name: "Advance", color: "bg-green-500 hover:bg-green-600" },
+  { name: "Select", color: "bg-green-700 hover:bg-green-800" },
+];
 
 interface ApplicantTagsProps {
-  currentTags: string[]
-  onAddTag: (tag: string) => void
+  currentTag: string | null; // Single tag instead of array
+  applicantId: string;       // Added to update Supabase
+  onTagChange: (tag: string | null) => void; // Updated callback
 }
 
-export function ApplicantTags({ currentTags, onAddTag }: ApplicantTagsProps) {
-  const [customTag, setCustomTag] = useState("")
-  const [open, setOpen] = useState(false)
+export function ApplicantTags({ currentTag, applicantId, onTagChange }: ApplicantTagsProps) {
+  const [open, setOpen] = useState(false);
 
-  const handleAddCustomTag = () => {
-    if (customTag.trim() && !currentTags.includes(customTag.trim())) {
-      onAddTag(customTag.trim())
-      setCustomTag("")
-      setOpen(false)
+  const handleTagChange = async (tag: string | null) => {
+    // Update the tag in Supabase
+    const { error } = await supabase
+      .from("applications")
+      .update({ tag: tag })
+      .eq("id", applicantId);
+
+    if (error) {
+      console.error("Error updating tag:", error);
+      return;
     }
-  }
 
-  const filteredCommonTags = COMMON_TAGS.filter((tag) => !currentTags.includes(tag))
+    // Update local state via callback
+    onTagChange(tag);
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-6">
-          <Tag className="h-3 w-3 mr-1" /> Add Tag
+          <Tag className="h-3 w-3 mr-1" /> {currentTag ? "Change Tag" : "Add Tag"}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <div className="space-y-4">
-          <div>
-            <h4 className="text-sm font-medium mb-2">Add Custom Tag</h4>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Enter tag name"
-                value={customTag}
-                onChange={(e) => setCustomTag(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleAddCustomTag()
-                  }
-                }}
-              />
-              <Button size="sm" onClick={handleAddCustomTag}>
-                Add
+      <PopoverContent className="w-48">
+        <div className="space-y-2">
+          <h4 className="text-sm font-medium mb-2">Status Tags</h4>
+          <div className="flex flex-col gap-1">
+            {STATUS_TAGS.map((tag) => (
+              <Button
+                key={tag.name}
+                variant="outline"
+                size="sm"
+                className={`text-xs text-white ${tag.color} ${
+                  currentTag === tag.name ? "ring-2 ring-offset-2 ring-black" : ""
+                }`}
+                onClick={() => handleTagChange(tag.name)}
+              >
+                <Tag className="h-3 w-3 mr-1" /> {tag.name}
               </Button>
-            </div>
+            ))}
+            {currentTag && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-xs text-gray-700"
+                onClick={() => handleTagChange(null)}
+              >
+                Clear Tag
+              </Button>
+            )}
           </div>
-
-          {filteredCommonTags.length > 0 && (
-            <div>
-              <h4 className="text-sm font-medium mb-2">Common Tags</h4>
-              <div className="flex flex-wrap gap-1">
-                {filteredCommonTags.map((tag) => (
-                  <Button
-                    key={tag}
-                    variant="outline"
-                    size="sm"
-                    className="text-xs"
-                    onClick={() => {
-                      onAddTag(tag)
-                      setOpen(false)
-                    }}
-                  >
-                    <Tag className="h-3 w-3 mr-1" /> {tag}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }
-

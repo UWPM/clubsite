@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -44,17 +44,31 @@ interface ApplicantViewProps {
   onToggleSelection: (applicantId: string, selected: boolean) => Promise<void>;
 }
 
+// Map tag names to their corresponding background classes (same as in ApplicantTags)
+const TAG_COLOR_MAP: { [tagName: string]: string } = {
+  Reject: "bg-red-500",
+  Review: "bg-yellow-500",
+  Advance: "bg-green-500",
+  Select: "bg-green-700",
+};
+
 export function ApplicantView({
   teamId,
   applications,
   onToggleSelection,
 }: ApplicantViewProps) {
+  const teamApplicants = applications[teamId] || [];
+
+  // Create local state for applicants so that UI updates immediately
+  const [localApplicants, setLocalApplicants] = useState(teamApplicants);
+  useEffect(() => {
+    setLocalApplicants(teamApplicants);
+  }, [teamApplicants]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [filterStatus, setFilterStatus] = useState<string>("all");
 
-  const teamApplicants = applications[teamId] || [];
-
-  const filteredApplicants = teamApplicants.filter((applicant) => {
+  const filteredApplicants = localApplicants.filter((applicant) => {
     if (filterStatus === "all") return true;
     if (filterStatus === "selected") return applicant.selected;
     if (filterStatus === "not-selected") return !applicant.selected;
@@ -79,14 +93,33 @@ export function ApplicantView({
     await onToggleSelection(currentApplicant.id!, newSelectedState);
   };
 
-  const handleAddTag = (tag: string) => {
+  const handleAddTag = (tag: string | null) => {
     if (!currentApplicant) return;
-    // TODO: Implement tag persistence
+    // Update local state so that the UI re-renders immediately
+    setLocalApplicants((prevApplicants) =>
+      prevApplicants.map((app) =>
+        app.id === currentApplicant.id ? { ...app, tag } : app,
+      ),
+    );
   };
 
-  const handleRemoveTag = (tag: string) => {
+  const handleRemoveTag = async () => {
     if (!currentApplicant) return;
-    // TODO: Implement tag persistence
+    // Update the tag in the DB
+    const { error } = await supabase
+      .from("applications")
+      .update({ tag: null })
+      .eq("id", currentApplicant.id);
+    if (error) {
+      console.error("Error clearing tag:", error);
+      return;
+    }
+    // Update local state so the UI re-renders immediately
+    setLocalApplicants((prevApplicants) =>
+      prevApplicants.map((app) =>
+        app.id === currentApplicant.id ? { ...app, tag: null } : app,
+      ),
+    );
   };
 
   if (!currentApplicant) {
@@ -191,26 +224,29 @@ export function ApplicantView({
           </div>
 
           <div className="mt-2 flex flex-wrap gap-1">
-            {(currentApplicant.tags || []).map((tag) => (
+            {currentApplicant.tag && (
               <Badge
-                key={tag}
+                key={currentApplicant.tag}
                 variant="secondary"
-                className="flex items-center gap-1"
+                className={`flex items-center gap-1 text-xs text-white cursor-default ${
+                  TAG_COLOR_MAP[currentApplicant.tag]
+                }`}
               >
-                {tag}
+                {currentApplicant.tag}
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-3 w-3 rounded-full"
-                  onClick={() => handleRemoveTag(tag)}
+                  onClick={handleRemoveTag}
                 >
                   <X className="h-2 w-2" />
                 </Button>
               </Badge>
-            ))}
+            )}
             <ApplicantTags
-              currentTags={currentApplicant.tags || []}
-              onAddTag={handleAddTag}
+              currentTag={currentApplicant.tag}
+              applicantId={currentApplicant.id || ""}
+              onTagChange={handleAddTag}
             />
           </div>
         </CardHeader>
