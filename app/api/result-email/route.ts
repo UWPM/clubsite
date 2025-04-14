@@ -1,15 +1,24 @@
-// app/api/email/route.ts
+// app/api/result-email/route.ts
 import { sendConfirmationEmail } from "@/trigger/trigger-email";
 import { tasks } from "@trigger.dev/sdk/v3";
 import { NextResponse } from "next/server";
 
+interface EmailRequest {
+  email: string;
+  fullName: string;
+  responses: {
+    subject: string;
+    message: string;
+  };
+}
+
 export async function POST(request: Request) {
   try {
-    const { email, fullName, responses } = await request.json();
+    const { email, fullName, responses }: EmailRequest = await request.json();
 
-    if (!email || !fullName) {
+    if (!email || !fullName || !responses?.subject || !responses?.message) {
       return NextResponse.json(
-        { error: "Missing required fields: email or fullName" },
+        { error: "Missing required fields: email, fullName, subject, or message" },
         { status: 400 }
       );
     }
@@ -17,7 +26,7 @@ export async function POST(request: Request) {
     const handle = await tasks.trigger<typeof sendConfirmationEmail>(
       "send-confirmation-email",
       {
-        type: "confirmation",
+        type: "result",
         email,
         fullName,
         responses,
@@ -40,23 +49,12 @@ export async function GET() {
     const handle = await tasks.trigger<typeof sendConfirmationEmail>(
       "send-confirmation-email",
       {
-        type: "confirmation",
+        type: "result",
         email: "test@gmail.com",
         fullName: "Test User",
         responses: {
-          term: "Fall 2024",
-          program: "Computer Science",
-          term_type: "Full-time",
-          on_campus: true,
-          resume_link: "https://example.com/resume.pdf",
-          why_interested: "I love product management",
-          first_choice_team: "product",
-          team_responses: {
-            product: {
-              experience: "2 years",
-              skills: "Agile, Scrum",
-            },
-          },
+          subject: "Test Subject",
+          message: "Test Message",
         },
       }
     );
