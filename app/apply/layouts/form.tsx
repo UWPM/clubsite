@@ -51,23 +51,12 @@ export function ProfileForm() {
       first_choice_team: "",
       second_choice_team: "",
       resume_link: "",
-
-      // Outreach
-      outreach_interested_roles: [],
     },
   });
 
   // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setSubmitting(true);
-
-    // Clean up data before submission: remove empty arrays.
-    if (
-      values.outreach_interested_roles &&
-      values.outreach_interested_roles.length === 0
-    ) {
-      delete values.outreach_interested_roles;
-    }
 
     // Data mapping
     const submission: FormSubmission = {
@@ -91,18 +80,18 @@ export function ProfileForm() {
     // Populate the `team_responses` dynamically based on selected teams
     const teamResponses: TeamResponses = {};
 
-    if (
-      values.first_choice_team === "Engineering" ||
-      values.second_choice_team === "Engineering"
-    ) {
-      teamResponses.engineering = {
-        choice_num: values.first_choice_team === "Engineering" ? 1 : 2,
-        engineering_skills: values.engineering_skills || "",
-        engineering_technical_challenge:
-          values.engineering_technical_challenge || "",
-        engineering_project_link: values.engineering_project_link || "",
-      };
-    }
+    // if (
+    //   values.first_choice_team === "Engineering" ||
+    //   values.second_choice_team === "Engineering"
+    // ) {
+    //   teamResponses.engineering = {
+    //     choice_num: values.first_choice_team === "Engineering" ? 1 : 2,
+    //     engineering_skills: values.engineering_skills || "",
+    //     engineering_technical_challenge:
+    //       values.engineering_technical_challenge || "",
+    //     engineering_project_link: values.engineering_project_link || "",
+    //   };
+    // }
 
     if (
       values.first_choice_team === "Marketing" ||
@@ -122,10 +111,6 @@ export function ProfileForm() {
     ) {
       teamResponses.outreach = {
         choice_num: values.first_choice_team === "Outreach" ? 1 : 2,
-        director_applicant:
-          values.outreach_interested_roles?.includes("director") || false,
-        lead_applicant:
-          values.outreach_interested_roles?.includes("lead") || false,
         outreach_skills: values.outreach_skills || "",
         outreach_experience: values.outreach_experience || "",
       };
@@ -159,6 +144,9 @@ export function ProfileForm() {
       values.second_choice_team === "Events"
     ) {
       teamResponses.events = {
+        lead_applicant:
+          values.first_choice_team === "Events" &&
+          values.events_role === "lead",
         choice_num: values.first_choice_team === "Events" ? 1 : 2,
         events_skills: values.events_skills || "",
         events_past_experience: values.events_past_experience || "",
@@ -170,6 +158,9 @@ export function ProfileForm() {
       values.second_choice_team === "Finance"
     ) {
       teamResponses.finance = {
+        lead_applicant:
+          values.first_choice_team === "Finance" &&
+          values.finance_role === "lead",
         choice_num: values.first_choice_team === "Finance" ? 1 : 2,
         finance_project: values.finance_project || "",
         finance_time_management: values.finance_time_management || "",
