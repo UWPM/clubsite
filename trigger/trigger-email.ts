@@ -76,10 +76,14 @@ const createEmailTemplate = (fullName: string | undefined, responses: any) => {
     responseSection += `<div>
             <h3>${first_team.charAt(0).toUpperCase() + first_team.slice(1)} Team ${Object.keys(responses.team_responses).length == 2 ? "(First Choice)" : ""}</h3>
             `;
-    for (const [question, answer] of Object.entries(responses.team_responses[first_team] as Record<string, string>)) {
-      if (question === 'choice_num' || question === "director_applicant" || question === "lead_applicant") continue;
-      responseSection += `<p><strong>${questionToText[question] ? questionToText[question] : question}</strong></p>
-                          <p style="margin-top: -0.5rem">${answer}</p>`
+    if (responses.team_responses[first_team]) {
+      for (const [question, answer] of Object.entries(responses.team_responses[first_team] as Record<string, string>)) {
+        if (question === 'choice_num' || question === "director_applicant" || question === "lead_applicant") continue;
+        responseSection += `<p><strong>${questionToText[question] ? questionToText[question] : question}</strong></p>
+                            <p style="margin-top: -0.5rem">${answer}</p>`;
+      }
+    } else {
+      console.warn(`No responses found for the first choice team: ${first_team}`);
     }
     responseSection += '</div>'
 
@@ -90,10 +94,14 @@ const createEmailTemplate = (fullName: string | undefined, responses: any) => {
       responseSection += `<div>
               <h3>${second_team.charAt(0).toUpperCase() + second_team.slice(1)} Team (Second Choice)</h3>
               `;
-      for (const [question, answer] of Object.entries(responses.team_responses[second_team] as Record<string, string>)) {
-        if (question === 'choice_num' || question === "director_applicant" || question === "lead_applicant") continue;
-        responseSection += `<p><strong>${questionToText[question] ? questionToText[question] : question}</strong></p>
-                            <p style="margin-top: -0.5rem">${answer}</p>`
+      if (responses.team_responses[second_team]) {
+        for (const [question, answer] of Object.entries(responses.team_responses[second_team] as Record<string, string>)) {
+          if (question === 'choice_num' || question === "director_applicant" || question === "lead_applicant") continue;
+          responseSection += `<p><strong>${questionToText[question] ? questionToText[question] : question}</strong></p>
+                              <p style="margin-top: -0.5rem">${answer}</p>`;
+        }
+      } else {
+        console.warn(`No responses found for the second choice team: ${second_team}`);
       }
       responseSection += '</div>'
     }

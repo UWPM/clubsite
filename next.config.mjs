@@ -6,7 +6,7 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/((?!apply$).*)",
+        source: "/((?!apply$|api/email).*)", // Exclude /api/email from redirect
         destination: "/apply",
         permanent: true,
       },
