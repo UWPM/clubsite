@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={spline.className}>
         <NoiseSVG />
-        <Navbar />
+        {/* <Navbar /> */}
         {children}
         {/* <Footer /> */}
         {/* <DynamicScrollToTop /> */}
