@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -47,8 +46,6 @@ export default function SubmissionDialog({
       responses: sendResponseCopy ? values : null,
     };
 
-    console.log("requestBody: ", requestBody);
-
     // trigger confirmation email via the API route
     try {
       const response = await fetch("/api/email", {
@@ -57,7 +54,6 @@ export default function SubmissionDialog({
         body: JSON.stringify(requestBody),
       });
       if (!response.ok) throw new Error("Failed to trigger email");
-      console.log("Email trigger response:", await response.json());
     } catch (error) {
       console.error("Error triggering email:", error);
     }

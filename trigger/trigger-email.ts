@@ -116,6 +116,5 @@ const createEmailTemplate = (fullName: string | undefined, responses: any) => {
     </html>
   `;
 
-  console.log(email);
   return email;
 }
