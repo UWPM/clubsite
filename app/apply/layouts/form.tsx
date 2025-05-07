@@ -57,7 +57,8 @@ export function ProfileForm() {
   // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setSubmitting(true);
-
+    console.log("Submitting");
+    
     // Data mapping
     const submission: FormSubmission = {
       created_at: new Date().toISOString(),
@@ -76,10 +77,10 @@ export function ProfileForm() {
       resume_link: values.resume_link,
       team_responses: {} as TeamResponses,
     };
-
-    // Populate the `team_responses` dynamically based on selected teams
+  
+    // Populate the team_responses dynamically based on selected teams
     const teamResponses: TeamResponses = {};
-
+  
     // if (
     //   values.first_choice_team === "Engineering" ||
     //   values.second_choice_team === "Engineering"
@@ -92,7 +93,7 @@ export function ProfileForm() {
     //     engineering_project_link: values.engineering_project_link || "",
     //   };
     // }
-
+  
     if (
       values.first_choice_team === "Marketing" ||
       values.second_choice_team === "Marketing"
@@ -104,7 +105,7 @@ export function ProfileForm() {
           values.marketing_example_instagram_post || "",
       };
     }
-
+  
     if (
       values.first_choice_team === "Outreach" ||
       values.second_choice_team === "Outreach"
@@ -115,7 +116,7 @@ export function ProfileForm() {
         outreach_experience: values.outreach_experience || "",
       };
     }
-
+  
     if (
       values.first_choice_team === "Podcast" ||
       values.second_choice_team === "Podcast"
@@ -126,7 +127,7 @@ export function ProfileForm() {
         podcast_example: values.podcast_example || "",
       };
     }
-
+  
     if (
       values.first_choice_team === "Secretary" ||
       values.second_choice_team === "Secretary"
@@ -138,39 +139,39 @@ export function ProfileForm() {
         secretary_team_conflict: values.secretary_team_conflict || "",
       };
     }
-
+  
+    // Modified Events section
     if (
       values.first_choice_team === "Events" ||
       values.second_choice_team === "Events"
     ) {
       teamResponses.events = {
-        lead_applicant:
-          values.first_choice_team === "Events" &&
-          values.events_role === "lead",
         choice_num: values.first_choice_team === "Events" ? 1 : 2,
         events_skills: values.events_skills || "",
         events_past_experience: values.events_past_experience || "",
+        // Always set lead_applicant regardless of whether it's first or second choice
+        lead_applicant: values.events_role === "lead"
       };
     }
-
+  
+    // Modified Finance section
     if (
       values.first_choice_team === "Finance" ||
       values.second_choice_team === "Finance"
     ) {
       teamResponses.finance = {
-        lead_applicant:
-          values.first_choice_team === "Finance" &&
-          values.finance_role === "lead",
         choice_num: values.first_choice_team === "Finance" ? 1 : 2,
         finance_project: values.finance_project || "",
         finance_time_management: values.finance_time_management || "",
+
+        lead_applicant: values.finance_role === "lead"
       };
     }
-
+  
     // Attach team responses JSON to the submission data
     submission.team_responses = teamResponses;
     setSubmissionObject(submission);
-
+  
     try {
       await submitApplication(submission);
       setSubmitted(true);

@@ -165,12 +165,15 @@ export const formSchema = z.object({
     message: "Please select a team.",
   }),
   resume_link: z.string().url({ message: "Please enter a valid URL." }),
+  
+  // Let's make all these fields optional first
   finance_role: z.enum(["director", "lead"], {
     message: "Please select a role.",
-  }),
+  }).optional(),
+  
   events_role: z.enum(["director", "lead"], {
     message: "Please select a role.",
-  }),
+  }).optional(),
   
   // CONDITIONAL FIELD SECTIONS BELOW
   // Events Team
@@ -281,6 +284,30 @@ export const formSchema = z.object({
       message: "Please enter a response.",
     })
     .optional(),
+}).refine((data) => {
+  // If Finance team is selected, finance_role is required
+  const isFinanceSelected = 
+    data.first_choice_team === "Finance" || 
+    data.second_choice_team === "Finance";
+  
+  if (isFinanceSelected && !data.finance_role) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please select a role for Finance team.",
+  path: ["finance_role"], // This specifies which field the error is associated with
+}).refine((data) => {
+  // If Events team is selected, events_role is required
+  const isEventsSelected = 
+    data.first_choice_team === "Events" || 
+    data.second_choice_team === "Events";
+  
+  if (isEventsSelected && !data.events_role) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please select a role for Events team.",
+  path: ["events_role"], // This specifies which field the error is associated with
 });
-
-export type FormValues = z.infer<typeof formSchema>;
