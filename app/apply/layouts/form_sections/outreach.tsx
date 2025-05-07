@@ -14,8 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { teamOptions,secondTeamOptions, handleWordCount, questionToText} from "../formSchema";
 
 const outreach_interested_roles = [
-  { id: "director", label: "Outreach Director" },
-  { id: "lead", label: "Outreach Lead" },
+  { id: "director", label: "Outreach Director" }
 ] as const;
 
 export function Outreach({ control }: { control: any }) {
@@ -108,24 +107,6 @@ export function Outreach({ control }: { control: any }) {
               />
             </FormControl>
             <FormDescription>Maximum: 200 words</FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      {/* Textarea */}
-      <FormField
-        control={control}
-        name="outreach_lead_experience"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{questionToText["outreach_lead_experience"]}</FormLabel>
-            <FormControl>
-              <Textarea placeholder="" className="resize-y" {...field} />
-            </FormControl>
-            <FormDescription>
-              For Outreach Lead applicants only.
-            </FormDescription>
             <FormMessage />
           </FormItem>
         )}

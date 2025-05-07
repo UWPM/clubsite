@@ -54,7 +54,6 @@ export type TeamResponses = {
     lead_applicant: boolean;
     outreach_skills: string;
     outreach_experience: string;
-    outreach_lead_experience: string;
   };
   podcast?: {
     choice_num: number;
@@ -87,7 +86,6 @@ export const questionToText: { [key: string]: string } = {
 
   outreach_skills: 'What relevant experiences and skills make you a good fit for the role(s)?',
   outreach_experience: 'Describe a time when you successfully built a relationship with an external organization or individual to achieve a goal. What steps did you take?',
-  outreach_lead_experience: 'Describe a time when you had to lead a team through a challenging external relations project?',
 
   podcast_skills: 'What relevant experiences and skills make you a good fit for the role(s)?',
   podcast_example: 'Share an example of a time when you had to tell a compelling story or explain a complex idea in an engaging way. How did you approach it?',
@@ -168,9 +166,6 @@ export const formSchema = z.object({
     message: "Please enter a response." 
   }).optional(),
   outreach_experience: z.string().nonempty({ 
-    message: "Please enter a response." 
-  }).optional(),
-  outreach_lead_experience: z.string().nonempty({ 
     message: "Please enter a response." 
   }).optional(),
 

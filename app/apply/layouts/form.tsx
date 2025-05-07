@@ -109,8 +109,7 @@ export function ProfileForm() {
         director_applicant: values.outreach_interested_roles?.includes("director") || false,
         lead_applicant: values.outreach_interested_roles?.includes("lead") || false,
         outreach_skills: values.outreach_skills || "",
-        outreach_experience: values.outreach_experience || "",
-        outreach_lead_experience: values.outreach_lead_experience || "",
+        outreach_experience: values.outreach_experience || ""
       };
     }
 
