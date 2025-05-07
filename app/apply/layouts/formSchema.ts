@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const teamOptions = ["Secretary", "Events", "Marketing", "Podcast", "Engineering", "Finance", "Outreach"]
+export const teamOptions = ["Secretary", "Events", "Marketing", "Podcast", "Engineering", "Finance", "Outreach", "Newsletter", "Design"]
 export const secondTeamOptions = [...teamOptions, "I am not interested in any other team"]
 
 
