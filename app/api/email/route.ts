@@ -4,69 +4,26 @@ import { tasks } from "@trigger.dev/sdk/v3";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  try {
-    const { email, fullName, responses } = await request.json();
+  const { email, fullName, responses } = await request.json(); // expect email and fullName in the request body
 
-    if (!email || !fullName) {
-      return NextResponse.json(
-        { error: "Missing required fields: email or fullName" },
-        { status: 400 }
-      );
-    }
-
-    const handle = await tasks.trigger<typeof sendConfirmationEmail>(
-      "send-confirmation-email",
-      {
-        type: "confirmation",
-        email,
-        fullName,
-        responses,
-      }
-    );
-
-    return NextResponse.json({ message: "Email task triggered", handle });
-  } catch (error) {
-    console.error("Error processing email request:", error);
-    return NextResponse.json(
-      { error: "Failed to process email request" },
-      { status: 500 }
-    );
+  if (!email) {
+    return NextResponse.json({ error: "Email is required" }, { status: 400 });
   }
+
+  const handle = await tasks.trigger<typeof sendConfirmationEmail>(
+    "send-confirmation-email",
+    { email, fullName, responses } // pass the payload
+  );
+
+  return NextResponse.json({ message: "Email task triggered", handle });
 }
 
 // Keep GET for testing
 export async function GET() {
-  try {
-    const handle = await tasks.trigger<typeof sendConfirmationEmail>(
-      "send-confirmation-email",
-      {
-        type: "confirmation",
-        email: "test@gmail.com",
-        fullName: "Test User",
-        responses: {
-          term: "Fall 2024",
-          program: "Computer Science",
-          term_type: "Full-time",
-          on_campus: true,
-          resume_link: "https://example.com/resume.pdf",
-          why_interested: "I love product management",
-          first_choice_team: "product",
-          team_responses: {
-            product: {
-              experience: "2 years",
-              skills: "Agile, Scrum",
-            },
-          },
-        },
-      }
-    );
+  const handle = await tasks.trigger<typeof sendConfirmationEmail>(
+    "send-confirmation-email",
+    { email: "test@gmail.com", fullName: "Test User" } // hardcoded for testing
+  );
 
-    return NextResponse.json({ message: "Test email task triggered", handle });
-  } catch (error) {
-    console.error("Error processing test email:", error);
-    return NextResponse.json(
-      { error: "Failed to process test email" },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({ message: "Test email task triggered", handle });
 }
