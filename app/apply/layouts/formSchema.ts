@@ -71,6 +71,7 @@ export type TeamResponses = {
     outreach_experience: string;
   };
   podcast?: {
+    lead_applicant: boolean;
     choice_num: number;
     podcast_skills: string;
     podcast_example: string;
@@ -172,6 +173,10 @@ export const formSchema = z.object({
   }).optional(),
   
   events_role: z.enum(["director", "lead"], {
+    message: "Please select a role.",
+  }).optional(),
+  
+  podcast_role: z.enum(["director", "lead"], {
     message: "Please select a role.",
   }).optional(),
   
@@ -310,4 +315,17 @@ export const formSchema = z.object({
 }, {
   message: "Please select a role for Events team.",
   path: ["events_role"], // This specifies which field the error is associated with
+}).refine((data) => {
+  // If Podcast team is selected, podcast_role is required
+  const isPodcastSelected = 
+    data.first_choice_team === "Podcast" || 
+    data.second_choice_team === "Podcast";
+  
+  if (isPodcastSelected && !data.podcast_role) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please select a role for Podcast team.",
+  path: ["podcast_role"], // This specifies which field the error is associated with
 });

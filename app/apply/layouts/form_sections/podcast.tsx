@@ -14,9 +14,47 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { teamOptions,secondTeamOptions, handleWordCount, questionToText} from "../formSchema";
 
 export function Podcast({ control }: { control: any }) {
+  const available_roles = [
+    { id: "director", label: "Podcast Director" },
+    { id: "lead", label: "Podcast Lead" },
+  ] as const;
+
   return (
     <div className="space-y-5">
       <h3>Podcast</h3>
+
+        <FormField
+          control={control}
+          name="podcast_role"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel className="text-base">Podcast Role</FormLabel>
+              <FormDescription>
+                Select the podcast role you are interested in.
+              </FormDescription>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  className="flex flex-col space-y-1"
+                >
+                  {available_roles.map((role) => (
+                    <FormItem
+                      key={role.id}
+                      className="flex items-center space-x-3 space-y-0"
+                    >
+                      <FormControl>
+                        <RadioGroupItem value={role.id} />
+                      </FormControl>
+                      <FormLabel className="font-normal">{role.label}</FormLabel>
+                    </FormItem>
+                  ))}
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
       {/* Textarea with word limit */}
       <FormField

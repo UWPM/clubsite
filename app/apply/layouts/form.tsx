@@ -125,6 +125,8 @@ export function ProfileForm() {
         choice_num: values.first_choice_team === "Podcast" ? 1 : 2,
         podcast_skills: values.podcast_skills || "",
         podcast_example: values.podcast_example || "",
+
+        lead_applicant: values.podcast_role === "lead"
       };
     }
   
@@ -149,7 +151,7 @@ export function ProfileForm() {
         choice_num: values.first_choice_team === "Events" ? 1 : 2,
         events_skills: values.events_skills || "",
         events_past_experience: values.events_past_experience || "",
-        // Always set lead_applicant regardless of whether it's first or second choice
+
         lead_applicant: values.events_role === "lead"
       };
     }
