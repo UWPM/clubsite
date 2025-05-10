@@ -9,23 +9,34 @@ export function middleware(request: NextRequest) {
   const subdomain = host.split('.')[0];
   const pathname = request.nextUrl.pathname;
 
-  // Existing root path redirect to /home for main domain
-  // if (pathname === '/') {
-  //   return NextResponse.redirect(new URL('/home', request.url));
-  // }
-  // Authentication for /dashboard
-  if (pathname.startsWith("/dashboard")) {
-    const token = request.cookies.get("auth_token")
-    if (!token) {
-      return NextResponse.redirect(new URL('/hidden-login', request.url));
-    }
+  // Skip API routes
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next();
   }
 
-  // Continue with default behavior for other requests
+  // Skip /dashboard and /hidden-login
+  const isBypassPath = pathname.startsWith("/dashboard") || pathname.startsWith("/hidden-login");
+  if (isBypassPath) {
+    // Additional dashboard auth logic
+    if (pathname.startsWith("/dashboard")) {
+      const token = request.cookies.get("auth_token");
+      if (!token) {
+        return NextResponse.redirect(new URL("/hidden-login", request.url));
+      }
+    }
+    return NextResponse.next();
+  }
+
+  // Redirect all other web access to /apply
+  if (pathname === "/" || pathname === "/home" || pathname === "/about" || pathname === "/events" || pathname === "/alumni") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/apply";
+    return NextResponse.redirect(url);
+  }
+
   return NextResponse.next();
 }
 
-  
 
 export const config = {
   matcher: '/:path*', // Apply to all paths
