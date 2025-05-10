@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { supabase } from "@/app/apply/supabaseClient";
+import { createClient } from "../../apply/supabaseServer";
+import { updateApplicationTag } from "../actions";
 
 // Define the allowed tags with their colors
 const STATUS_TAGS = [
@@ -25,15 +26,7 @@ export function ApplicantTags({ currentTag, applicantId, onTagChange }: Applican
 
   const handleTagChange = async (tag: string | null) => {
     // Update the tag in Supabase
-    const { error } = await supabase
-      .from("applications")
-      .update({ tag: tag })
-      .eq("id", applicantId);
-
-    if (error) {
-      console.error("Error updating tag:", error);
-      return;
-    }
+    updateApplicationTag(applicantId, tag)
 
     // Update local state via callback
     onTagChange(tag);

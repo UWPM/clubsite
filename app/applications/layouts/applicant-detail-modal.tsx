@@ -10,7 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { TEAMS } from "../get-applications";
+import { TEAMS } from "../../apply/layouts/formSchema";
 import {
   type FormSubmission,
   questionToText,
@@ -78,9 +78,7 @@ export function ApplicantDetailModal({
 
           <div className="mt-2 flex flex-wrap gap-1">
             {applicant.tag && (
-              <Badge variant="secondary">
-                {applicant.tag}
-              </Badge>
+              <Badge variant="secondary">{applicant.tag}</Badge>
             )}
           </div>
         </DialogHeader>

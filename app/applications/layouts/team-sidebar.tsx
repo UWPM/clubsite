@@ -15,7 +15,7 @@ import {
   SidebarMenuBadge,
 } from "@/components/ui/sidebar";
 import { useState } from "react";
-import { TEAMS } from "../get-applications";
+import { TEAMS } from "../../apply/layouts/formSchema";
 import {
   type TeamResponses,
   type FormSubmission,

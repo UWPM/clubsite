@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { TEAMS } from "../get-applications";
+import { TEAMS } from "../../apply/layouts/formSchema";
 import {
   type FormSubmission,
   type TeamResponses,
@@ -152,7 +152,7 @@ export function SelectedApplicantsView({
                   <div className="mt-2 flex flex-wrap gap-1">
                     {applicant.tag && (
                       <Badge variant="secondary" className="text-xs">
-                      {applicant.tag}
+                        {applicant.tag}
                       </Badge>
                     )}
                   </div>

@@ -13,7 +13,6 @@ export default function ClientLayout({
 
   useEffect(() => {
     const host = window.location.host;
-    console.log(host);
     const subdomain = host.split(".")[0];
     setShowNavbar(subdomain !== "applications");
   }, []);

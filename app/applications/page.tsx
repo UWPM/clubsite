@@ -9,8 +9,7 @@ import {
   type TeamResponses,
   type FormSubmission,
 } from "../apply/layouts/formSchema";
-import { getApplications } from "./get-applications";
-import { supabase } from "../apply/supabaseClient";
+import { getApplications, updateApplicationSelection } from "./actions";
 
 type TeamId = keyof TeamResponses;
 
@@ -20,10 +19,13 @@ export default function ClubApplications() {
   const [applications, setApplications] = useState<{
     [key in TeamId]?: FormSubmission[];
   }>({});
+  const [loading, setLoading] = useState(true);
 
   const fetchApplications = async () => {
+    setLoading(true);
     const data = await getApplications();
     setApplications(data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -48,17 +50,28 @@ export default function ClubApplications() {
     });
 
     // Update the database
-    const { error } = await supabase
-      .from("applications")
-      .update({ selected })
-      .eq("id", applicantId);
-
-    if (error) {
-      console.error("Error updating selection status:", error);
-      // Revert the optimistic update on error
-      fetchApplications();
-    }
+    updateApplicationSelection(applicantId, selected)
+      .then(() => {
+        // Optionally, you can refetch applications here if needed
+        fetchApplications();
+      })
+      .catch((error) => {
+        console.error("Error updating selection status:", error);
+        // Revert the optimistic update on error
+        fetchApplications();
+      });
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full border-4 border-gray-300 border-t-gray-900 h-12 w-12" />
+          <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>

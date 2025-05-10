@@ -95,75 +95,19 @@ export function Intro({ control }: { control: any }) {
           )}
         />
 
-        {/* Program dropdown */}
-        <div className="">
-          <FormField
-            control={control}
-            name="program"
-            render={({ field }) => {
-
-
-              return (
-              <FormItem>
-                <FormLabel className="block">What program are you in?</FormLabel>
-                <FormControl>
-
-                <div className="flex flex-row gap-4">
-                  <Popover open={openProgram} onOpenChange={setOpenProgram}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={openProgram}
-                        className="w-[200px] justify-between"
-                        >
-                        {programValue
-                          ? programList.find((program) => program.value === programValue)?.value
-                          : "Select program..."}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0">
-                      <Command>
-                        <CommandInput placeholder="Search program..." />
-                        <CommandList>
-                          <CommandEmpty>No program found.</CommandEmpty>
-                          <CommandGroup>
-                            {programList.map((program) => (
-                              <CommandItem
-                              key={program.value}
-                              value={program.value}
-                              onSelect={(currentValue) => {
-                                field.onChange(currentValue === field.value ? "" : currentValue); // Update form state
-                                setProgramValue(currentValue === programValue ? "" : currentValue)
-                                setOpenProgram(false)
-                              }}
-                              onMouseEnter={() => {
-                                setCurrentProgram(program.formalName);
-                              }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    programValue === program.value ? "opacity-100" : "opacity-0"
-                                  )}
-                                />
-                                {program.value}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <div className={`flex items-center italic text-sm text-zinc-400 transition-opacity duration-200 ${isFading ? 'opacity-100' : 'opacity-0'}`}>{currentProgram}</div>
-                </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}}
-          />        
-        </div>
+        {/* Program */}
+        <FormField
+          control={control}
+          name="program"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What program are you in?</FormLabel>
+              <FormControl>
+                <Input placeholder="ECE, MATH, GBDA, etc." {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
        
         {/* Term dropdown */}
         <FormField

@@ -28,13 +28,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TEAMS } from "../get-applications";
+import { TEAMS } from "../../apply/layouts/formSchema";
 import {
   type FormSubmission,
   questionToText,
   type TeamResponses,
 } from "../../apply/layouts/formSchema";
-import { supabase } from "../../apply/supabaseClient";
+import { updateApplicationTag } from "../actions";
 
 type TeamId = keyof TeamResponses;
 
@@ -104,22 +104,17 @@ export function ApplicantView({
   };
 
   const handleRemoveTag = async () => {
-    if (!currentApplicant) return;
     // Update the tag in the DB
-    const { error } = await supabase
-      .from("applications")
-      .update({ tag: null })
-      .eq("id", currentApplicant.id);
-    if (error) {
-      console.error("Error clearing tag:", error);
-      return;
+    if (currentApplicant.id) {
+      updateApplicationTag(currentApplicant.id, null);
+  
+      // Update local state so the UI re-renders immediately
+      setLocalApplicants((prevApplicants) =>
+        prevApplicants.map((app) =>
+          app.id === currentApplicant.id ? { ...app, tag: null } : app,
+        ),
+      );
     }
-    // Update local state so the UI re-renders immediately
-    setLocalApplicants((prevApplicants) =>
-      prevApplicants.map((app) =>
-        app.id === currentApplicant.id ? { ...app, tag: null } : app,
-      ),
-    );
   };
 
   if (!currentApplicant) {
@@ -136,7 +131,7 @@ export function ApplicantView({
   }
 
   // Get team-specific responses
-  const teamResponses = currentApplicant.team_responses[teamId] || {};
+  const teamResponses = (currentApplicant.team_responses as TeamResponses)[teamId] || {};
 
   return (
     <div className="container mx-auto py-6">
@@ -228,7 +223,7 @@ export function ApplicantView({
               <Badge
                 key={currentApplicant.tag}
                 variant="secondary"
-                className={`flex items-center gap-1 text-xs text-white cursor-default ${
+                className={`flex cursor-default items-center gap-1 text-xs text-white ${
                   TAG_COLOR_MAP[currentApplicant.tag]
                 }`}
               >
@@ -244,7 +239,7 @@ export function ApplicantView({
               </Badge>
             )}
             <ApplicantTags
-              currentTag={currentApplicant.tag}
+              currentTag={currentApplicant.tag ?? null}
               applicantId={currentApplicant.id || ""}
               onTagChange={handleAddTag}
             />
