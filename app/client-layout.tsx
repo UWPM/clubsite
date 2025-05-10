@@ -12,9 +12,9 @@ export default function ClientLayout({
   const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
-    const host = window.location.host;
-    const subdomain = host.split(".")[0];
-    setShowNavbar(subdomain !== "applications");
+    const path = window.location.pathname.split("/").filter(Boolean).pop();
+    const hideNavbarPaths = ["applications", "hidden-login", "apply"];
+    setShowNavbar(!hideNavbarPaths.includes(path || ""));
   }, []);
 
   return (

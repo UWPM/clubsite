@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   description: "Apply to the UWaterloo PM club",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,9 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={spline.className}>
-        <NoiseSVG />
-        {/* <Navbar /> */}
-        {children}
+        <ClientLayout>{children}</ClientLayout>
         {/* <Footer /> */}
         {/* <DynamicScrollToTop /> */}
       </body>

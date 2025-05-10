@@ -10,7 +10,7 @@ export default function Navbar() {
   const currentPath = usePathname();
 
   return (
-    <nav className="">
+    <nav className="border">
       <div className="container flex px-4 md:hidden">
         <Sheet>
           <SheetTrigger className="md:hidden" asChild>
