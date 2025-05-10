@@ -13,8 +13,8 @@ export function middleware(request: NextRequest) {
   // if (pathname === '/') {
   //   return NextResponse.redirect(new URL('/home', request.url));
   // }
-  // Authentication for /applications
-  if (pathname.startsWith("/applications")) {
+  // Authentication for /dashboard
+  if (pathname.startsWith("/dashboard")) {
     const token = request.cookies.get("auth_token")
     if (!token) {
       return NextResponse.redirect(new URL('/hidden-login', request.url));

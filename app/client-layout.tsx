@@ -13,7 +13,7 @@ export default function ClientLayout({
 
   useEffect(() => {
     const path = window.location.pathname.split("/").filter(Boolean).pop();
-    const hideNavbarPaths = ["applications", "hidden-login", "apply"];
+    const hideNavbarPaths = ["dashboard", "hidden-login", "apply"];
     setShowNavbar(!hideNavbarPaths.includes(path || ""));
   }, []);
 

@@ -20,7 +20,7 @@ export default function AdminLogin() {
     });
 
     if (res.ok) {
-      window.location.href = "/applications"; // Redirect after login
+      window.location.href = "/dashboard"; // Redirect after login
     } else {
       alert("Invalid credentials");
     }
