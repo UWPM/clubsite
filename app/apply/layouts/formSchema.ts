@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+export type TeamId = keyof TeamResponses;
+export const TEAMS: { id: TeamId; name: string }[] = [
+    { id: "events", name: "Events" },
+    { id: "marketing", name: "Marketing" },
+    { id: "outreach", name: "Outreach" },
+    { id: "podcast", name: "Podcast" },
+    { id: "secretary", name: "Secretary" },
+    { id: "finance", name: "Finance" },
+    { id: "design", name: "Design" },
+    { id: "newsletter", name: "Newsletter" },
+]
+
 export const teamOptions = [
   "Secretary",
   "Events",
@@ -32,6 +44,7 @@ export const handleWordCount = (
 };
 
 export type FormSubmission = {
+  id?: string;
   created_at: string;
   uw_email_address: string;
   full_name: string;
@@ -44,6 +57,8 @@ export type FormSubmission = {
   second_choice_team: string | undefined;
   resume_link: string;
   team_responses: {};
+  tag?: string | null // Added for tagging functionality
+  selected?: boolean // Added for selection functionality
 };
 
 // Define the structure of the JSON column
@@ -88,6 +103,8 @@ export type TeamResponses = {
     events_skills: string;
     events_past_experience: string;
   };
+  newsletter?: {};
+  design?: {};
 };
 
 export const questionToText: { [key: string]: string } = {

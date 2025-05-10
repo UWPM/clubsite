@@ -57,7 +57,7 @@ export function ProfileForm() {
   // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setSubmitting(true);
-    console.log("Submitting");
+    // console.log("Submitting");
     
     // Data mapping
     const submission: FormSubmission = {

@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
   const handle = await tasks.trigger<typeof sendConfirmationEmail>(
     "send-confirmation-email",
-    { email, fullName, responses } // pass the payload
+    { type:"confirmation", email, fullName, responses } // pass the payload
   );
 
   return NextResponse.json({ message: "Email task triggered", handle });
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 export async function GET() {
   const handle = await tasks.trigger<typeof sendConfirmationEmail>(
     "send-confirmation-email",
-    { email: "test@gmail.com", fullName: "Test User" } // hardcoded for testing
+    { type: "confirmation", email: "test@gmail.com", fullName: "Test User" } // hardcoded for testing
   );
 
   return NextResponse.json({ message: "Test email task triggered", handle });
