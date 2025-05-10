@@ -9,20 +9,23 @@ export function middleware(request: NextRequest) {
   const subdomain = host.split('.')[0];
   const pathname = request.nextUrl.pathname;
 
-  // Subdomain routing for applications.domain.com
-  if (subdomain === 'applications' && pathname === '/') {
-    // Rewrite to /applications but keep the URL as applications.localhost:3000/
-    return NextResponse.rewrite(new URL('/applications', request.url));
-  }
-
   // Existing root path redirect to /home for main domain
-  if (subdomain !== 'applications' && pathname === '/') {
+  if (pathname === '/') {
     return NextResponse.redirect(new URL('/home', request.url));
+  }
+  // Authentication for /applications
+  if (pathname.startsWith("/applications")) {
+    const token = request.cookies.get("auth_token")
+    if (!token) {
+      return NextResponse.redirect(new URL('/hidden-login', request.url));
+    }
   }
 
   // Continue with default behavior for other requests
   return NextResponse.next();
 }
+
+  
 
 export const config = {
   matcher: '/:path*', // Apply to all paths
