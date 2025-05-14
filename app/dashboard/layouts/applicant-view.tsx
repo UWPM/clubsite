@@ -56,6 +56,17 @@ const TAG_COLOR_MAP: { [tagName: string]: string } = {
   Select: "bg-green-700",
 };
 
+function isLeadApplicant(teamResponses: TeamResponses, teamId: TeamId) {
+  const teamResponse = teamResponses[teamId];
+  
+  // Narrow the type to check if 'lead_applicant' exists
+  if (teamResponse && 'lead_applicant' in teamResponse) {
+    return teamResponse.lead_applicant === true;
+  }
+
+  return false;
+}
+
 export function ApplicantView({
   teamId,
   applications,
@@ -412,6 +423,12 @@ export function ApplicantView({
                   )}
                 </p>
               </div>
+              <div>
+                <h3 className="mb-1 text-sm font-medium">Lead Applicant</h3>
+                <p className="text-sm">{isLeadApplicant(currentApplicant.team_responses, teamId) ? "Yes" : "No"}</p>
+              </div>
+          
+              
             </div>
 
             <div className="space-y-4">
@@ -423,7 +440,7 @@ export function ApplicantView({
               </div>
 
               {Object.entries(teamResponses)
-                .filter(([key]) => key !== "choice_num")
+                .filter(([key]) => key !== "choice_num" && key !== "lead_applicant")
                 .map(([key, value]) => (
                   <div key={key}>
                     <h3 className="mb-1 text-sm font-medium">
