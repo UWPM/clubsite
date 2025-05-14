@@ -41,7 +41,11 @@ type TeamId = keyof TeamResponses;
 interface ApplicantViewProps {
   teamId: TeamId;
   applications: { [key in TeamId]?: FormSubmission[] };
-  onToggleSelection: (applicantId: string, selected: boolean) => Promise<void>;
+  onToggleSelection: (
+    applicantId: string,
+    selected: boolean,
+    isFirstChoice: boolean,
+  ) => Promise<void>;
 }
 
 // Map tag names to their corresponding background classes (same as in ApplicantTags)
@@ -70,12 +74,23 @@ export function ApplicantView({
 
   const filteredApplicants = localApplicants.filter((applicant) => {
     if (filterStatus === "all") return true;
-    if (filterStatus === "selected") return applicant.selected;
-    if (filterStatus === "not-selected") return !applicant.selected;
+
+    // Determine if this applicant has selected status for the current team
+    const isFirstChoice =
+      applicant.first_choice_team.toLowerCase() === teamId.toLowerCase();
+    const isSelected = isFirstChoice
+      ? applicant.selected_first_choice
+      : applicant.selected_second_choice;
+
+    if (filterStatus === "selected") return isSelected;
+    if (filterStatus === "not-selected") return !isSelected;
     return true;
   });
 
-  const currentApplicant = filteredApplicants[currentIndex];
+  const currentApplicantId = filteredApplicants[currentIndex]?.id;
+  const currentApplicant = localApplicants.find(
+    (app) => app.id === currentApplicantId,
+  );
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : 0));
@@ -89,32 +104,62 @@ export function ApplicantView({
 
   const handleToggleSelection = async () => {
     if (!currentApplicant) return;
-    const newSelectedState = !currentApplicant.selected;
-    await onToggleSelection(currentApplicant.id!, newSelectedState);
-  };
 
-  const handleAddTag = (tag: string | null) => {
-    if (!currentApplicant) return;
-    // Update local state so that the UI re-renders immediately
+    // Determine if this is the applicant's first or second choice team
+    const isFirstChoice =
+      currentApplicant.first_choice_team.toLowerCase() === teamId.toLowerCase();
+
+    // Get the current selection status for this team
+    const currentSelectionStatus = isFirstChoice
+      ? currentApplicant.selected_first_choice
+      : currentApplicant.selected_second_choice;
+
+    // Toggle the selection status
+    const newSelectedState = !currentSelectionStatus;
+
+    // Call the parent component's toggle function
+    await onToggleSelection(
+      currentApplicant.id!,
+      newSelectedState,
+      isFirstChoice,
+    );
+  };
+  const handleTagChange = (applicantId: string, tag: string | null) => {
     setLocalApplicants((prevApplicants) =>
-      prevApplicants.map((app) =>
-        app.id === currentApplicant.id ? { ...app, tag } : app,
-      ),
+      prevApplicants.map((app) => {
+        if (app.id === applicantId) {
+          const isFirstChoice =
+            app.first_choice_team.toLowerCase() === teamId.toLowerCase();
+          return isFirstChoice
+            ? { ...app, tag_first_choice: tag }
+            : { ...app, tag_second_choice: tag };
+        }
+        return app;
+      }),
     );
   };
 
   const handleRemoveTag = async () => {
+    if (!currentApplicant?.id) return;
+
+    // Determine if this is the applicant's first or second choice team
+    const isFirstChoice =
+      currentApplicant.first_choice_team.toLowerCase() === teamId.toLowerCase();
+
     // Update the tag in the DB
-    if (currentApplicant.id) {
-      updateApplicationTag(currentApplicant.id, null);
-  
-      // Update local state so the UI re-renders immediately
-      setLocalApplicants((prevApplicants) =>
-        prevApplicants.map((app) =>
-          app.id === currentApplicant.id ? { ...app, tag: null } : app,
-        ),
-      );
-    }
+    updateApplicationTag(currentApplicant.id, null, isFirstChoice);
+
+    // Update local state so the UI re-renders immediately
+    setLocalApplicants((prevApplicants) =>
+      prevApplicants.map((app) => {
+        if (app.id === currentApplicant.id) {
+          return isFirstChoice
+            ? { ...app, tag_first_choice: null }
+            : { ...app, tag_second_choice: null };
+        }
+        return app;
+      }),
+    );
   };
 
   if (!currentApplicant) {
@@ -131,7 +176,21 @@ export function ApplicantView({
   }
 
   // Get team-specific responses
-  const teamResponses = (currentApplicant.team_responses as TeamResponses)[teamId] || {};
+  const teamResponses =
+    (currentApplicant.team_responses as TeamResponses)[teamId] || {};
+
+  // Determine if this is the applicant's first or second choice team
+  const isFirstChoice =
+    currentApplicant.first_choice_team.toLowerCase() === teamId.toLowerCase();
+
+  // Get the appropriate tag and selection status for the current team
+  const currentTag = isFirstChoice
+    ? currentApplicant.tag_first_choice
+    : currentApplicant.tag_second_choice;
+
+  const isSelected = isFirstChoice
+    ? currentApplicant.selected_first_choice
+    : currentApplicant.selected_second_choice;
 
   return (
     <div className="container mx-auto py-6">
@@ -147,7 +206,16 @@ export function ApplicantView({
           </h1>
           <p className="text-muted-foreground">
             {filteredApplicants.length} applicants •{" "}
-            {teamApplicants.filter((a) => a.selected).length} selected
+            {
+              localApplicants.filter((a) => {
+                const isApplicantFirstChoice =
+                  a.first_choice_team.toLowerCase() === teamId.toLowerCase();
+                return isApplicantFirstChoice
+                  ? a.selected_first_choice
+                  : a.selected_second_choice;
+              }).length
+            }{" "}
+            selected
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -203,10 +271,10 @@ export function ApplicantView({
               <CardTitle>{currentApplicant.full_name}</CardTitle>
             </div>
             <Button
-              variant={currentApplicant.selected ? "destructive" : "default"}
+              variant={isSelected ? "destructive" : "default"}
               onClick={handleToggleSelection}
             >
-              {currentApplicant.selected ? (
+              {isSelected ? (
                 <>
                   <X className="mr-2 h-4 w-4" /> Remove Selection
                 </>
@@ -219,15 +287,27 @@ export function ApplicantView({
           </div>
 
           <div className="mt-2 flex flex-wrap gap-1">
-            {currentApplicant.tag && (
+            {(isFirstChoice
+              ? currentApplicant.tag_first_choice
+              : currentApplicant.tag_second_choice) && (
               <Badge
-                key={currentApplicant.tag}
+                key={
+                  isFirstChoice
+                    ? currentApplicant.tag_first_choice
+                    : currentApplicant.tag_second_choice
+                }
                 variant="secondary"
                 className={`flex cursor-default items-center gap-1 text-xs text-white ${
-                  TAG_COLOR_MAP[currentApplicant.tag]
+                  TAG_COLOR_MAP[
+                    (isFirstChoice
+                      ? currentApplicant.tag_first_choice
+                      : currentApplicant.tag_second_choice) ?? ""
+                  ]
                 }`}
               >
-                {currentApplicant.tag}
+                {isFirstChoice
+                  ? currentApplicant.tag_first_choice
+                  : currentApplicant.tag_second_choice}
                 <Button
                   variant="ghost"
                   size="icon"
@@ -237,11 +317,19 @@ export function ApplicantView({
                   <X className="h-2 w-2" />
                 </Button>
               </Badge>
-            )}
+            )}{" "}
             <ApplicantTags
-              currentTag={currentApplicant.tag ?? null}
+              currentTag={
+                (isFirstChoice
+                  ? currentApplicant.tag_first_choice
+                  : currentApplicant.tag_second_choice)
+                || ""
+              }
               applicantId={currentApplicant.id || ""}
-              onTagChange={handleAddTag}
+              onTagChange={handleTagChange}
+              teamId={teamId}
+              applications={applications}
+              isFirstChoice={isFirstChoice}
             />
           </div>
         </CardHeader>
@@ -371,13 +459,11 @@ export function ApplicantView({
               </Button>
             </div>
             <Button
-              variant={currentApplicant.selected ? "destructive" : "default"}
+              variant={isSelected ? "destructive" : "default"}
               size="sm"
               onClick={handleToggleSelection}
             >
-              {currentApplicant.selected
-                ? "Remove Selection"
-                : "Select Applicant"}
+              {isSelected ? "Remove Selection" : "Select Applicant"}
             </Button>
           </div>
         </CardFooter>

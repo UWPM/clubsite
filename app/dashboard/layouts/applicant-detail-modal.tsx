@@ -22,7 +22,7 @@ interface ApplicantDetailModalProps {
   onClose: () => void;
   applicant: FormSubmission;
   teamId: string;
-  onToggleSelection: (applicantId: string, selected: boolean) => Promise<void>;
+  onToggleSelection: (applicantId: string, selected: boolean, isFirstChoice: boolean) => Promise<void>;
 }
 
 export function ApplicantDetailModal({
@@ -36,10 +36,22 @@ export function ApplicantDetailModal({
   const teamResponses =
     applicant.team_responses[teamId as keyof typeof applicant.team_responses] ||
     {};
+  
+  // Determine if this is the applicant's first or second choice team
+  const isFirstChoice = applicant.first_choice_team.toLowerCase() === teamId.toLowerCase();
+  
+  // Get the appropriate tag and selection status for the current team
+  const currentTag = isFirstChoice 
+    ? applicant.tag_first_choice 
+    : applicant.tag_second_choice;
+    
+  const isSelected = isFirstChoice 
+    ? applicant.selected_first_choice 
+    : applicant.selected_second_choice;
 
   const handleToggleSelection = async () => {
-    const newSelectedState = !applicant.selected;
-    await onToggleSelection(applicant.id!, newSelectedState);
+    const newSelectedState = !isSelected;
+    await onToggleSelection(applicant.id!, newSelectedState, isFirstChoice);
   };
 
   return (
@@ -61,10 +73,10 @@ export function ApplicantDetailModal({
               </DialogTitle>
             </div>
             <Button
-              variant={applicant.selected ? "destructive" : "default"}
+              variant={isSelected ? "destructive" : "default"}
               onClick={handleToggleSelection}
             >
-              {applicant.selected ? (
+              {isSelected ? (
                 <>
                   <X className="mr-2 h-4 w-4" /> Remove Selection
                 </>
@@ -77,8 +89,8 @@ export function ApplicantDetailModal({
           </div>
 
           <div className="mt-2 flex flex-wrap gap-1">
-            {applicant.tag && (
-              <Badge variant="secondary">{applicant.tag}</Badge>
+            {currentTag && (
+              <Badge variant="secondary">{currentTag}</Badge>
             )}
           </div>
         </DialogHeader>

@@ -32,35 +32,44 @@ export default function ClubApplications() {
     fetchApplications();
   }, []);
 
-  const handleToggleSelection = async (
-    applicantId: string,
-    selected: boolean,
-  ) => {
-    // Optimistically update the UI
-    setApplications((prev) => {
-      const newApplications = { ...prev };
-      Object.keys(newApplications).forEach((teamId) => {
-        const teamApplicants = newApplications[teamId as TeamId] || [];
-        const applicant = teamApplicants.find((a) => a.id === applicantId);
-        if (applicant) {
-          applicant.selected = selected;
-        }
-      });
-      return newApplications;
-    });
+const handleToggleSelection = async (
+  applicantId: string,
+  selected: boolean
+) => {
+  // Find the applicant in the current selectedTeam
+  const teamApplicants = applications[selectedTeam as TeamId] || [];
+  const applicant = teamApplicants.find((a) => a.id === applicantId);
 
-    // Update the database
-    updateApplicationSelection(applicantId, selected)
-      .then(() => {
-        // Optionally, you can refetch applications here if needed
-        fetchApplications();
-      })
-      .catch((error) => {
-        console.error("Error updating selection status:", error);
-        // Revert the optimistic update on error
-        fetchApplications();
-      });
-  };
+  // Determine if this team is the first choice
+  const first_choice = applicant?.first_choice_team.toLowerCase() === selectedTeam?.toLowerCase();
+
+  // Optimistically update the UI
+  setApplications((prev) => {
+    const newApplications = { ...prev };
+    Object.keys(newApplications).forEach((teamId) => {
+      const teamApplicants = newApplications[teamId as TeamId] || [];
+      const applicant = teamApplicants.find((a) => a.id === applicantId);
+      if (applicant) {
+        if(first_choice) {
+          applicant.selected_first_choice = selected;
+        } else {
+          applicant.selected_second_choice = selected;
+        }
+      }
+    });
+    return newApplications;
+  });
+
+  // Update the database
+  updateApplicationSelection(applicantId, selected, first_choice)
+    .then(() => {
+      fetchApplications(); // optionally refetch
+    })
+    .catch((error) => {
+      console.error("Error updating selection status:", error);
+      fetchApplications(); // revert UI if needed
+    });
+};
 
   if (loading) {
     return (

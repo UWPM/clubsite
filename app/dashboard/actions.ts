@@ -36,33 +36,58 @@ export async function getApplications(): Promise<{ [key in TeamId]?: FormSubmiss
         }
     });
 
-    console.log(groupedApplications["newsletter"]);
+    // console.log(groupedApplications["newsletter"]);
     
     return groupedApplications;
 }
 
-export async function updateApplicationSelection(applicantId: string, selected: boolean): Promise<void> {
+export async function updateApplicationSelection(applicantId: string, selected: boolean, first_choice: boolean): Promise<void> {
     const supabase = await createClient();
-
-    const { error } = await supabase
-        .from("applications")
-        .update({ selected })
-        .eq("id", applicantId);
-
-    if (error) {
-        throw new Error("Failed to update selection status: ", error);
+    // update first choice selection status
+    if (first_choice) {
+        const { error } = await supabase
+            .from("applications")
+            .update({ selected_first_choice: selected })
+            .eq("id", applicantId);
+        if (error) {
+            throw new Error("Failed to update first choice selection status: ", error);
+        }
+    }
+    // update second choice team selection status
+    else {
+        const { error } = await supabase
+            .from("applications")
+            .update({ selected_second_choice: selected })
+            .eq("id", applicantId);
+        if (error) {
+            throw new Error("Failed to update second choice selection status: ", error);
+        }
     }
 }
 
-export async function updateApplicationTag(applicantId: string, tag: string | null): Promise<void> {
+export async function updateApplicationTag(applicantId: string, tag: string | null, first_choice: boolean): Promise<void> {
     const supabase = await createClient();
 
-    const { error } = await supabase
-        .from("applications")
-        .update({ tag })
-        .eq("id", applicantId);
+    // update first choice tag
+    if (first_choice) {
+        const { error } = await supabase
+            .from("applications")
+            .update({ tag_first_choice: tag })
+            .eq("id", applicantId);
 
-    if (error) {
-        throw new Error("Failed to update tag");
+        if (error) {
+            throw new Error("Failed to update first choice tag");
+        }
+    }
+    // update second choice tag
+    else {
+        const { error } = await supabase
+            .from("applications")
+            .update({ tag_second_choice: tag })
+            .eq("id", applicantId);
+
+        if (error) {
+            throw new Error("Failed to update second choice tag");
+        }
     }
 }

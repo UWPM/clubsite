@@ -57,8 +57,10 @@ export type FormSubmission = {
   second_choice_team: string | undefined;
   resume_link: string;
   team_responses: {};
-  tag?: string | null // Added for tagging functionality
-  selected?: boolean // Added for selection functionality
+  tag_first_choice?: string | null; 
+  tag_second_choice?: string | null
+  selected_first_choice?: boolean
+  selected_second_choice?: boolean
 };
 
 // Define the structure of the JSON column

@@ -36,8 +36,20 @@ export function SelectedApplicantsView({
 
   // Get selected applicants for the team
   const allApplicants = applications[teamId] || [];
+  
+  // Filter for applicants selected for this team
   const selectedApplicants = allApplicants.filter(
-    (a: FormSubmission) => a.selected,
+    (a: FormSubmission) => {
+      // If this team is the applicant's first choice
+      if (a.first_choice_team && a.first_choice_team.toLowerCase() === teamId.toLowerCase()) {
+        return a.selected_first_choice;
+      }
+      // If this team is the applicant's second choice
+      else if (a.second_choice_team && a.second_choice_team.toLowerCase() === teamId.toLowerCase()) {
+        return a.selected_second_choice;
+      }
+      return false;
+    }
   );
 
   // Filter by search query
@@ -53,6 +65,30 @@ export function SelectedApplicantsView({
   const handleOpenDetailModal = (applicant: FormSubmission) => {
     setSelectedApplicant(applicant);
     setIsDetailModalOpen(true);
+  };
+
+  // Get the appropriate tag for an applicant based on the team
+  const getApplicantTag = (applicant: FormSubmission) => {
+    // If this team is the applicant's first choice
+    if (applicant.first_choice_team && applicant.first_choice_team.toLowerCase() === teamId.toLowerCase()) {
+      return applicant.tag_first_choice;
+    }
+    // If this team is the applicant's second choice
+    else if (applicant.second_choice_team && applicant.second_choice_team.toLowerCase() === teamId.toLowerCase()) {
+      return applicant.tag_second_choice;
+    }
+    return null;
+  };
+
+  // Determine if this team is the applicant's first or second choice
+  const getTeamChoiceLabel = (applicant: FormSubmission) => {
+    if (applicant.first_choice_team && applicant.first_choice_team.toLowerCase() === teamId.toLowerCase()) {
+      return "1st Choice";
+    }
+    else if (applicant.second_choice_team && applicant.second_choice_team.toLowerCase() === teamId.toLowerCase()) {
+      return "2nd Choice";
+    }
+    return "";
   };
 
   return (
@@ -150,9 +186,11 @@ export function SelectedApplicantsView({
                   </p>
 
                   <div className="mt-2 flex flex-wrap gap-1">
-                    {applicant.tag && (
+                    <Badge className="text-xs">{getTeamChoiceLabel(applicant)}</Badge>
+                    
+                    {getApplicantTag(applicant) && (
                       <Badge variant="secondary" className="text-xs">
-                        {applicant.tag}
+                        {getApplicantTag(applicant)}
                       </Badge>
                     )}
                   </div>

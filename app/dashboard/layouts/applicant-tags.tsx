@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { createClient } from "../../apply/supabaseServer";
 import { updateApplicationTag } from "../actions";
+
+import {
+  type FormSubmission,
+  questionToText,
+  type TeamResponses,
+} from "../../apply/layouts/formSchema";
+type TeamId = keyof TeamResponses;
 
 // Define the allowed tags with their colors
 const STATUS_TAGS = [
@@ -18,18 +25,25 @@ const STATUS_TAGS = [
 interface ApplicantTagsProps {
   currentTag: string | null; // Single tag instead of array
   applicantId: string;       // Added to update Supabase
-  onTagChange: (tag: string | null) => void; // Updated callback
+  onTagChange: (applicantId: string, tag: string | null) => void;
+  teamId: TeamId;
+  applications: { [key in TeamId]?: FormSubmission[] };
+  isFirstChoice: boolean;
 }
-
-export function ApplicantTags({ currentTag, applicantId, onTagChange }: ApplicantTagsProps) {
+export function ApplicantTags({ 
+  currentTag, 
+  applicantId, 
+  onTagChange, 
+  teamId,
+  applications,
+  isFirstChoice, 
+}: ApplicantTagsProps) {
   const [open, setOpen] = useState(false);
 
-  const handleTagChange = async (tag: string | null) => {
-    // Update the tag in Supabase
-    updateApplicationTag(applicantId, tag)
 
-    // Update local state via callback
-    onTagChange(tag);
+  const handleTagChange = async (tag: string | null) => {
+    await updateApplicationTag(applicantId, tag, isFirstChoice);
+    onTagChange(applicantId, tag); 
     setOpen(false);
   };
 

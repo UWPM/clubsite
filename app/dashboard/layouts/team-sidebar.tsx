@@ -39,12 +39,11 @@ export function TeamSidebar({
   applications,
 }: TeamSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
-
   const filteredTeams = TEAMS.filter((team) =>
     team.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
-
-  // Initialize selectedCounts with all team IDs set to 0
+  
+  /* Initialize selectedCounts with all team IDs set to 0 */
   const selectedCounts = TEAMS.reduce(
     (acc, team) => {
       acc[team.id as TeamId] = 0;
@@ -52,12 +51,18 @@ export function TeamSidebar({
     },
     {} as Record<TeamId, number>,
   );
-
-  // Count selected applicants for each team
+  
+  /* Count selected applicants for each team based on first and second choice selections */
   Object.entries(applications).forEach(([teamId, applicants]) => {
-    selectedCounts[teamId as TeamId] = applicants.filter(
-      (a) => a.selected,
-    ).length;
+    selectedCounts[teamId as TeamId] = applicants.filter((applicant) => {
+      // Check if this team is the applicant's first or second choice
+      const isFirstChoice = applicant.first_choice_team.toLowerCase() === teamId.toLowerCase();
+      
+      // Return true if the appropriate selection field is true
+      return isFirstChoice 
+        ? applicant.selected_first_choice 
+        : applicant.selected_second_choice;
+    }).length;
   });
 
   return (
