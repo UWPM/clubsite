@@ -109,9 +109,9 @@ export default function SubmissionDialog({
             <Button variant="destructive" onClick={handleClose}>
               Close
             </Button>
-          ) : dialogStep === 1 ? (
-            <Button onClick={handleNext}>Send Email</Button>
-          ) : null}
+          ) : dialogStep ===
+            1 ? // <Button onClick={handleNext}>Send Email</Button>
+          null : null}
         </div>
       </DialogContent>
     </Dialog>

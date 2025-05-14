@@ -73,13 +73,13 @@ export function SelectedApplicantsView({
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <Button
+          {/* <Button
             onClick={() => setIsEmailModalOpen(true)}
             disabled={selectedApplicants.length === 0}
           >
             <Mail className="mr-2 h-4 w-4" />
             Send Email to All ({selectedApplicants.length})
-          </Button>
+          </Button> */}
         </div>
       </div>
 
@@ -163,12 +163,12 @@ export function SelectedApplicantsView({
         </div>
       )}
 
-      <EmailModal
+      {/* <EmailModal
         isOpen={isEmailModalOpen}
         onClose={() => setIsEmailModalOpen(false)}
         recipients={selectedApplicants}
         teamName={TEAMS.find((team) => team.id === teamId)?.name || ""}
-      />
+      /> */}
 
       {selectedApplicant && (
         <ApplicantDetailModal
