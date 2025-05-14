@@ -101,7 +101,7 @@ export default function ClubApplications() {
           ) : (
             <div className="flex h-full items-center justify-center">
               <div className="max-w-md text-center">
-                <h2 className="text-2xl font-bold">Club Applications</h2>
+                <h2 className="text-2xl font-bold">UWPM Applications</h2>
                 <p className="mt-2 text-muted-foreground">
                   Select a team from the sidebar to view applications.
                 </p>

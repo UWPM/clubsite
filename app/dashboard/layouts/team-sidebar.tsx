@@ -64,7 +64,7 @@ export function TeamSidebar({
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center px-2 py-2">
-          <h2 className="text-lg font-semibold">Club Applications</h2>
+          <h2 className="text-lg font-semibold">UWPM Applications</h2>
         </div>
         <div className="px-2 pb-2">
           <div className="relative">
