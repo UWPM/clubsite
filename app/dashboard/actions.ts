@@ -15,17 +15,28 @@ export async function getApplications(): Promise<{ [key in TeamId]?: FormSubmiss
         throw new Error("Failed to submit application");
     }
 
-
-    // Group applications by team
+    // Group applications by both first_choice_team and second_choice_team
     const groupedApplications: { [key in TeamId]?: FormSubmission[] } = {};
-    
+
     data.forEach((application: FormSubmission) => {
-        const teamId = (application.first_choice_team as TeamId).toLowerCase() as TeamId;
-        if (!groupedApplications[teamId]) {
-            groupedApplications[teamId] = [];
+        // Process first choice team
+        const firstTeamId = (application.first_choice_team as TeamId).toLowerCase() as TeamId;
+        if (!groupedApplications[firstTeamId]) {
+            groupedApplications[firstTeamId] = [];
         }
-        groupedApplications[teamId]?.push(application);
+        groupedApplications[firstTeamId]?.push(application);
+
+        // Process second choice team
+        if (application.second_choice_team) {
+            const secondTeamId = (application.second_choice_team as TeamId).toLowerCase() as TeamId;
+            if (!groupedApplications[secondTeamId]) {
+                groupedApplications[secondTeamId] = [];
+            }
+            groupedApplications[secondTeamId]?.push(application);
+        }
     });
+
+    console.log(groupedApplications["newsletter"]);
     
     return groupedApplications;
 }
