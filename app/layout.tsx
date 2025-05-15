@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
-import dynamic from "next/dynamic";
 import NoiseSVG from "@/components/noise-svg";
-import ClientLayout from "./client-layout";
 
 const spline = Inter({
   subsets: ["latin"],
@@ -16,7 +12,6 @@ export const metadata: Metadata = {
   description: "Apply to the UWaterloo PM club",
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,7 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={spline.className}>
-        <ClientLayout>{children}</ClientLayout>
+        <NoiseSVG />
+        {children}
         {/* <Footer /> */}
         {/* <DynamicScrollToTop /> */}
       </body>
