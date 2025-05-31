@@ -1,5 +1,4 @@
-import Hero from "./layouts/hero";
 
 export default function Home() {
-  return <Hero />;
+  return <div>home</div>;
 }
