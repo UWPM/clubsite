@@ -47,7 +47,7 @@ export default function PastEvents() {
       <h2 className="font-bold">Past Events</h2>
       <div className="relative flex flex-col space-y-6">
         <Carousel
-          className="rounded-md bg-gradient-to-b from-zinc-500 to-zinc-500/40 p-12 md:p-24"
+          className="rounded-md bg-linear-to-b from-zinc-500 to-zinc-500/40 p-12 md:p-24"
           opts={{ loop: true }}
           plugins={[plugin.current]}
         >

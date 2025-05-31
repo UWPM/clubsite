@@ -41,7 +41,7 @@ export default function Hero() {
             alt="UWPM Students"
             src="/images/about-us/club-members.jpg"
             fill
-            className="object-cover brightness-[25%]"
+            className="object-cover brightness-25"
           />
         </motion.div>
       </motion.div>

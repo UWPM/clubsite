@@ -71,9 +71,9 @@ const HexagonCard = ({
           />
         </div>
       </div>
-      <div className="pl-18 flex h-32 w-[300px] rounded-lg rounded-s-none bg-gradient-to-b from-primary/20 to-primary/5 p-4 pl-12 shadow-2xl sm:w-[500px] md:h-48 md:w-[650px] md:p-8 md:pl-36">
+      <div className="pl-18 flex h-32 w-[300px] rounded-lg rounded-s-none bg-linear-to-b from-primary/20 to-primary/5 p-4 pl-12 shadow-2xl sm:w-[500px] md:h-48 md:w-[650px] md:p-8 md:pl-36">
         <div className="flex w-full flex-col items-center justify-center gap-4 text-center">
-          <h3 className="w-full rounded bg-gradient-to-b from-primary to-primary/80 bg-clip-text font-semibold text-transparent">
+          <h3 className="w-full rounded bg-linear-to-b from-primary to-primary/80 bg-clip-text font-semibold text-transparent">
             {title}
           </h3>
           <p className="text-primary/70">{description}</p>

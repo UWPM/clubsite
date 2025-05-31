@@ -55,7 +55,7 @@ export default function WorkExperience() {
   return (
     <section className="space-y-12 pb-16 pt-32">
       <h2 className="text-pretty text-center">Our Community Has Worked At</h2>
-      <div className="inline-flex w-full flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_24px,_black_calc(100%-24px),transparent_100%)] sm:[mask-image:_linear-gradient(to_right,transparent_0,_black_144px,_black_calc(100%-144px),transparent_100%)]">
+      <div className="inline-flex w-full flex-nowrap overflow-hidden mask-[linear-gradient(to_right,transparent_0,black_24px,black_calc(100%-24px),transparent_100%)] sm:mask-[linear-gradient(to_right,transparent_0,black_144px,black_calc(100%-144px),transparent_100%)]">
         <ul className="flex animate-infinite-scroll items-center justify-start [&_img]:max-w-none [&_li]:mx-4">
           {companies.map((company, index) => (
             <li key={index}>

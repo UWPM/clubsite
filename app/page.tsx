@@ -4,7 +4,7 @@ import { Loader } from "lucide-react";
  */
 export default function Home() {
   return (
-    <div className="absolute left-0 top-0 z-[100] grid min-h-dvh w-full place-items-center bg-background">
+    <div className="absolute left-0 top-0 z-100 grid min-h-dvh w-full place-items-center bg-background">
       <Loader className="animate-spin" />
     </div>
   );

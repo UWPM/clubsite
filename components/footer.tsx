@@ -74,7 +74,7 @@ export default function Footer() {
 const FooterLinks = (props: ComponentProps<"ul">) => {
   return (
     <ul
-      className="*:after:ease-[cubic-bezier(0.65_0.05_0.36_1)] space-y-2 *:relative *:w-fit *:after:absolute *:after:bottom-0 *:after:left-0 *:after:h-[2px] *:after:w-full *:after:origin-bottom-right *:after:scale-x-0 *:after:bg-accent *:after:transition-transform *:after:duration-300 hover:*:after:origin-bottom-left hover:*:after:scale-x-100 md:space-y-1"
+      className="*:after:ease-[cubic-bezier(0.65_0.05_0.36_1)] space-y-2 *:relative *:w-fit *:after:absolute *:after:bottom-0 *:after:left-0 *:after:h-[2px] *:after:w-full *:after:origin-bottom-right *:after:scale-x-0 *:after:bg-accent *:after:transition-transform *:after:duration-300 *:hover:after:origin-bottom-left *:hover:after:scale-x-100 md:space-y-1"
       {...props}
     />
   );
