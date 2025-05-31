@@ -1,26 +1,35 @@
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { cva } from "class-variance-authority";
 
 interface SpinnerProps {
   className?: string;
   size?: "small" | "medium" | "large";
 }
 
-export const Spinner = ({ className, size = "medium" }: SpinnerProps) => {
-  const sizeStyles: Record<NonNullable<SpinnerProps["size"]>, string> = {
-    small: "h-4 w-4",
-    medium: "h-6 w-6",
-    large: "h-12 w-12",
-  };
+const spinnerVariants = cva(
+  "animate-spin rounded-full border-2 border-gray-200 border-t-gray-900",
+  {
+    variants: {
+      size: {
+        small: "size-4",
+        medium: "size-6",
+        large: "size-12",
+      },
+    },
+    defaultVariants: {
+      size: "medium",
+    },
+  },
+);
 
+export const Spinner = ({ className, size = "medium" }: SpinnerProps) => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* bg-white bg-opacity-60 */}
-      
-      <div className="border border-zinc-300 shadow-md bg-zinc-50 flex flex-row gap-2 text-sm items-center p-2 rounded-md">
-        <Loader2
-          className={cn("animate-spin text-primary", sizeStyles[size], className)}
-        />
+
+      <div className="flex flex-row items-center gap-2 rounded-md border border-zinc-300 bg-zinc-50 p-2 text-sm shadow-md">
+        <Loader2 className={cn(spinnerVariants({ size }), className)} />
         Submitting
       </div>
     </div>
