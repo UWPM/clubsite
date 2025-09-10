@@ -110,8 +110,7 @@ export default function SubmissionDialog({
               Close
             </Button>
           ) : dialogStep ===
-            1 ? // <Button onClick={handleNext}>Send Email</Button>
-          null : null}
+            1 ? <Button onClick={handleNext}>Send Email</Button> : null}
         </div>
       </DialogContent>
     </Dialog>
