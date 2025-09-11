@@ -20,6 +20,8 @@ import { Outreach } from "./form_sections/outreach";
 import { Podcast } from "./form_sections/podcast";
 import { Engineering } from "./form_sections/engineering";
 import { Finance } from "./form_sections/finance";
+import { Design } from "./form_sections/design";
+import { Newsletter } from "./form_sections/newsletter";
 
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -81,18 +83,18 @@ export function ProfileForm() {
     // Populate the team_responses dynamically based on selected teams
     const teamResponses: TeamResponses = {};
   
-    // if (
-    //   values.first_choice_team === "Engineering" ||
-    //   values.second_choice_team === "Engineering"
-    // ) {
-    //   teamResponses.engineering = {
-    //     choice_num: values.first_choice_team === "Engineering" ? 1 : 2,
-    //     engineering_skills: values.engineering_skills || "",
-    //     engineering_technical_challenge:
-    //       values.engineering_technical_challenge || "",
-    //     engineering_project_link: values.engineering_project_link || "",
-    //   };
-    // }
+    if (
+      values.first_choice_team === "Engineering" ||
+      values.second_choice_team === "Engineering"
+    ) {
+      teamResponses.engineering = {
+        choice_num: values.first_choice_team === "Engineering" ? 1 : 2,
+        engineering_skills: values.engineering_skills || "",
+        engineering_technical_challenge:
+          values.engineering_technical_challenge || "",
+        engineering_project_link: values.engineering_project_link || "",
+      };
+    }
   
     if (
       values.first_choice_team === "Marketing" ||
@@ -114,6 +116,7 @@ export function ProfileForm() {
         choice_num: values.first_choice_team === "Outreach" ? 1 : 2,
         outreach_skills: values.outreach_skills || "",
         outreach_experience: values.outreach_experience || "",
+        lead_applicant: values.outreach_role === "lead",
       };
     }
   
@@ -125,8 +128,7 @@ export function ProfileForm() {
         choice_num: values.first_choice_team === "Podcast" ? 1 : 2,
         podcast_skills: values.podcast_skills || "",
         podcast_example: values.podcast_example || "",
-
-        lead_applicant: values.podcast_role === "lead"
+        lead_applicant: false
       };
     }
   
@@ -151,7 +153,6 @@ export function ProfileForm() {
         choice_num: values.first_choice_team === "Events" ? 1 : 2,
         events_skills: values.events_skills || "",
         events_past_experience: values.events_past_experience || "",
-
         lead_applicant: values.events_role === "lead"
       };
     }
@@ -165,9 +166,27 @@ export function ProfileForm() {
         choice_num: values.first_choice_team === "Finance" ? 1 : 2,
         finance_project: values.finance_project || "",
         finance_time_management: values.finance_time_management || "",
-
-        lead_applicant: values.finance_role === "lead"
+        lead_applicant: false
       };
+
+    if (
+      values.first_choice_team === "Design" ||
+      values.second_choice_team === "Design"
+    ) {
+      teamResponses.design = {
+        choice_num: values.first_choice_team === "Design" ? 1 : 2,
+        lead_applicant: values.design_role === "lead",
+      };
+    }
+
+    if (
+      values.first_choice_team === "Newsletter" ||
+      values.second_choice_team === "Newsletter"
+    ) {
+      teamResponses.newsletter = {
+        choice_num: values.first_choice_team === "Newsletter" ? 1 : 2,
+      }
+    }
     }
   
     // Attach team responses JSON to the submission data
@@ -237,6 +256,12 @@ export function ProfileForm() {
       : []),
     ...(selectedTeams.includes("Finance")
       ? [{ id: "finance", component: <Finance control={control} /> }]
+      : []),
+    ...(selectedTeams.includes("Design")
+      ? [{ id: "design", component: <Design control={control} /> }]
+      : []),
+    ...(selectedTeams.includes("Newsletter")
+      ? [{ id: "newsletter", component: <Newsletter control={control} /> }]
       : []),
   ];
 

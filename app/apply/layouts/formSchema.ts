@@ -10,6 +10,7 @@ export const TEAMS: { id: TeamId; name: string }[] = [
     { id: "finance", name: "Finance" },
     { id: "design", name: "Design" },
     { id: "newsletter", name: "Newsletter" },
+    { id: "engineering", name: "Engineering" },
 ]
 
 export const teamOptions = [
@@ -17,7 +18,7 @@ export const teamOptions = [
   "Events",
   "Marketing",
   "Podcast",
-  // "Engineering",
+  "Engineering",
   "Finance",
   "Outreach",
   "Newsletter",
@@ -65,12 +66,12 @@ export type FormSubmission = {
 
 // Define the structure of the JSON column
 export type TeamResponses = {
-  // engineering?: {
-  //   choice_num: number;
-  //   engineering_skills: string;
-  //   engineering_technical_challenge: string;
-  //   engineering_project_link: string;
-  // };
+  engineering?: {
+    choice_num: number;
+    engineering_skills: string;
+    engineering_technical_challenge: string;
+    engineering_project_link: string;
+  };
   finance?: {
     lead_applicant: boolean;
     choice_num: number;
@@ -83,6 +84,7 @@ export type TeamResponses = {
     marketing_example_instagram_post: string;
   };
   outreach?: {
+    lead_applicant: boolean;
     choice_num: number;
     outreach_skills: string;
     outreach_experience: string;
@@ -105,17 +107,22 @@ export type TeamResponses = {
     events_skills: string;
     events_past_experience: string;
   };
-  newsletter?: {};
-  design?: {};
+  newsletter?: {
+    choice_num: number;
+  };
+  design?: {
+    lead_applicant: boolean;
+    choice_num: number;
+  };
 };
 
 export const questionToText: { [key: string]: string } = {
-  // engineering_skills:
-  //   "What relevant experiences and skills make you a good fit for the role(s)?",
-  // engineering_technical_challenge:
-  //   "Briefly discuss one technical challenge that you faced during a project. How did you go about overcoming it?",
-  // engineering_project_link:
-  //   "Please provide us a link (Devpost, Github, anything) to a project that you are proud of!",
+  engineering_skills:
+    "What relevant experiences and skills make you a good fit for the role(s)?",
+  engineering_technical_challenge:
+    "Briefly discuss one technical challenge that you faced during a project. How did you go about overcoming it?",
+  engineering_project_link:
+    "Please provide us a link (Devpost, Github, anything) to a project that you are proud of!",
 
   events_skills:
     "What relevant experiences and skills make you a good fit for the role?",
@@ -186,16 +193,36 @@ export const formSchema = z.object({
   }),
   resume_link: z.string().url({ message: "Please enter a valid URL." }),
   
-  // Let's make all these fields optional first
-  finance_role: z.enum(["director", "lead"], {
+  // Role selection per team (no VP roles)
+  finance_role: z.enum(["director"] as const, {
     message: "Please select a role.",
   }).optional(),
   
-  events_role: z.enum(["director", "lead"], {
+  events_role: z.enum(["director", "lead"] as const, {
     message: "Please select a role.",
   }).optional(),
   
-  podcast_role: z.enum(["director", "lead"], {
+  podcast_role: z.enum(["director"] as const, {
+    message: "Please select a role.",
+  }).optional(),
+
+  marketing_role: z.enum(["director"] as const, {
+    message: "Please select a role.",
+  }).optional(),
+
+  outreach_role: z.enum(["director", "lead"] as const, {
+    message: "Please select a role.",
+  }).optional(),
+
+  engineering_role: z.enum(["director"] as const, {
+    message: "Please select a role.",
+  }).optional(),
+
+  design_role: z.enum(["director", "lead"] as const, {
+    message: "Please select a role.",
+  }).optional(),
+
+  newsletter_role: z.enum(["director"] as const, {
     message: "Please select a role.",
   }).optional(),
   
@@ -347,4 +374,69 @@ export const formSchema = z.object({
 }, {
   message: "Please select a role for Podcast team.",
   path: ["podcast_role"], // This specifies which field the error is associated with
+}).refine((data) => {
+  // If Marketing team is selected, marketing_role is required
+  const isMarketingSelected =
+    data.first_choice_team === "Marketing" ||
+    data.second_choice_team === "Marketing";
+
+  if (isMarketingSelected && !data.marketing_role) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please select a role for Marketing team.",
+  path: ["marketing_role"],
+}).refine((data) => {
+  // If Outreach team is selected, outreach_role is required
+  const isOutreachSelected =
+    data.first_choice_team === "Outreach" ||
+    data.second_choice_team === "Outreach";
+
+  if (isOutreachSelected && !data.outreach_role) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please select a role for Outreach team.",
+  path: ["outreach_role"],
+}).refine((data) => {
+  // If Engineering team is selected, engineering_role is required
+  const isEngineeringSelected =
+    data.first_choice_team === "Engineering" ||
+    data.second_choice_team === "Engineering";
+
+  if (isEngineeringSelected && !data.engineering_role) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please select a role for Engineering team.",
+  path: ["engineering_role"],
+}).refine((data) => {
+  // If Design team is selected, design_role is required
+  const isDesignSelected =
+    data.first_choice_team === "Design" ||
+    data.second_choice_team === "Design";
+
+  if (isDesignSelected && !data.design_role) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please select a role for Design team.",
+  path: ["design_role"],
+}).refine((data) => {
+  // If Newsletter team is selected, newsletter_role is required
+  const isNewsletterSelected =
+    data.first_choice_team === "Newsletter" ||
+    data.second_choice_team === "Newsletter";
+
+  if (isNewsletterSelected && !data.newsletter_role) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please select a role for Newsletter team.",
+  path: ["newsletter_role"],
 });

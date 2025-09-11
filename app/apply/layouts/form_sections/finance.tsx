@@ -14,7 +14,6 @@ import { handleWordCount, questionToText } from "../formSchema";
 export function Finance({ control }: { control: any }) {
   const available_roles = [
     { id: "director", label: "Finance Director" },
-    { id: "lead", label: "Finance Lead" },
   ] as const;
 
   return (

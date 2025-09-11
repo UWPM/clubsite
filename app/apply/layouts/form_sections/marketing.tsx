@@ -13,9 +13,45 @@ import { Textarea } from "@/components/ui/textarea";
 import { teamOptions,secondTeamOptions, handleWordCount, questionToText} from "../formSchema";
 
 export function Marketing({ control }: { control: any }) {
+  const available_roles = [
+    { id: "director", label: "Marketing Director" },
+  ] as const;
   return (
     <div className="space-y-5">
       <h3>Marketing</h3>
+
+      <FormField
+        control={control}
+        name="marketing_role"
+        render={({ field }) => (
+          <FormItem className="space-y-3">
+            <FormLabel className="text-base">Marketing Role</FormLabel>
+            <FormDescription>
+              Select the marketing role you are interested in.
+            </FormDescription>
+            <FormControl>
+              <RadioGroup
+                onValueChange={field.onChange}
+                value={field.value}
+                className="flex flex-col space-y-1"
+              >
+                {available_roles.map((role) => (
+                  <FormItem
+                    key={role.id}
+                    className="flex items-center space-x-3 space-y-0"
+                  >
+                    <FormControl>
+                      <RadioGroupItem value={role.id} />
+                    </FormControl>
+                    <FormLabel className="font-normal">{role.label}</FormLabel>
+                  </FormItem>
+                ))}
+              </RadioGroup>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       {/* Textarea with word limit */}
       <FormField
