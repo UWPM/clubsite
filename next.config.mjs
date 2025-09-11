@@ -6,7 +6,7 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/((?!apply|dashboard).*)",
+        source: "/((?!apply|dashboard|hidden-login).*)",
         destination: "/apply",
         permanent: false,
       },
