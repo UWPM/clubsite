@@ -6,7 +6,9 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/((?!apply|dashboard|hidden-login|api).*)",
+        // Exclude pages that should NOT redirect to /apply. Added 'prodcon' so
+        // requests to /prodcon render the new route instead of being redirected.
+        source: "/((?!apply|dashboard|hidden-login|api|prodcon).*)",
         destination: "/apply",
         permanent: false,
       },
