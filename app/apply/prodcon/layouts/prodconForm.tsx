@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState, useCallback, useEffect } from "react";
 
-import { formSchema } from "./formSchema";
-import { FormSubmission } from "./formSchema";
+import { prodconFormSchema } from "./prodconFormSchema";
+import { FormSubmission } from "./prodconFormSchema";
 
 import { Card, CardContent } from "@/components/ui/card";
 import useEmblaCarousel from "embla-carousel-react";
@@ -31,20 +31,63 @@ export function ProfileForm() {
     useState<FormSubmission | null>(null);
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof prodconFormSchema>>({
+    resolver: zodResolver(prodconFormSchema),
     // resolver: undefined,
   });
 
   // 2. Define a submit handler.
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof prodconFormSchema>) => {
     setSubmitting(true);
     // console.log("Submitting");
 
     // Data mapping
     const submission: FormSubmission = {
-      
+      created_at: new Date().toISOString(),
+      app_type: (values.app_type as "team" | "individual") || null,
+      raw: values,
+      submitter_email:
+        values.app_type === "team"
+          ? values.team_app_member1_email || null
+          : values.individual_app_email || null,
     };
+
+    // If team, build TeamData
+    if (values.app_type === "team") {
+      const members = [1, 2, 3, 4]
+        .map((i) => {
+          const name = (values as any)[`team_app_member${i}_name`];
+          const email = (values as any)[`team_app_member${i}_email`];
+          const program = (values as any)[`team_app_member${i}_prog`];
+          // normalize empty strings to null
+          return {
+            name: name && name !== "" ? name : null,
+            email: email && email !== "" ? email : null,
+            program: program && program !== "" ? program : null,
+          };
+        })
+        .filter((m) => m.name || m.email || m.program);
+
+      submission.team = {
+        members: members as any,
+        open_to_grouping: values.team_app_team_less_than_4 === "Yes",
+        goal: values.team_app_goal || null,
+        pm_interest: values.team_app_pm_interest || null,
+      };
+    }
+
+    // If individual, build IndividualData
+    if (values.app_type === "individual") {
+      submission.individual = {
+        name: values.individual_app_name || null,
+        email: values.individual_app_email || null,
+        program: values.individual_app_prog || null,
+        goal: values.individual_app_goal || null,
+        pm_interest: values.individual_app_pm_interest || null,
+      };
+    }
+
+    setSubmissionObject(submission);
 
     try {
       await submitApplication(submission);

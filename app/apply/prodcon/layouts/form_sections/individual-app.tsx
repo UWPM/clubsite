@@ -6,20 +6,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 
 import {
   handleWordCount,
   questionToText,
-} from "../formSchema";
+} from "../prodconFormSchema";
 
 export function IndividualApplication({ control }: { control: any }) {
-  const available_roles = [
-    { id: "director", label: "Engineering Director" },
-  ] as const;
   return (
     <div className="space-y-5">
       <h3>Individual Application</h3>
@@ -27,7 +21,7 @@ export function IndividualApplication({ control }: { control: any }) {
       {/* Details */}
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="individual_app_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["individual_app_name"]}</FormLabel>
@@ -45,7 +39,7 @@ export function IndividualApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="individual_app_email"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["individual_app_email"]}</FormLabel>
@@ -63,7 +57,7 @@ export function IndividualApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="individual_app_prog"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["individual_app_prog"]}</FormLabel>
@@ -81,7 +75,7 @@ export function IndividualApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_skills"
+        name="individual_app_goal"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["individual_app_goal"]}</FormLabel>
@@ -101,7 +95,7 @@ export function IndividualApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_skills"
+        name="individual_app_pm_interest"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["individual_app_pm_interest"]}</FormLabel>

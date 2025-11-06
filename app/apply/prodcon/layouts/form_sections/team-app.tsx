@@ -6,20 +6,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 
 import {
   handleWordCount,
   questionToText,
-} from "../formSchema";
+} from "../prodconFormSchema";
 
 export function TeamApplication({ control }: { control: any }) {
-  const available_roles = [
-    { id: "director", label: "Engineering Director" },
-  ] as const;
+  
   return (
     <div className="space-y-5">
       <h3>Team Application</h3>
@@ -27,7 +23,7 @@ export function TeamApplication({ control }: { control: any }) {
       {/* Teammate 1 Details */}
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member1_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member1_name"]}</FormLabel>
@@ -45,7 +41,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member1_email"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member1_email"]}</FormLabel>
@@ -63,7 +59,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member1_prog"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member1_prog"]}</FormLabel>
@@ -83,7 +79,7 @@ export function TeamApplication({ control }: { control: any }) {
       {/* Teammate 2 Details */}
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member2_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member2_name"]}</FormLabel>
@@ -101,7 +97,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member2_email"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member2_email"]}</FormLabel>
@@ -119,7 +115,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member2_prog"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member2_prog"]}</FormLabel>
@@ -138,7 +134,7 @@ export function TeamApplication({ control }: { control: any }) {
       {/* Teammate 3 Details */}
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member3_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member3_name"]}</FormLabel>
@@ -156,7 +152,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member3_email"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member3_email"]}</FormLabel>
@@ -174,7 +170,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member3_prog"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member3_prog"]}</FormLabel>
@@ -193,7 +189,7 @@ export function TeamApplication({ control }: { control: any }) {
       {/* Teammate 4 Details */}
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member4_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member4_name"]}</FormLabel>
@@ -211,7 +207,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member4_email"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member4_email"]}</FormLabel>
@@ -229,7 +225,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_project_link"
+        name="team_app_member4_prog"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_member4_prog"]}</FormLabel>
@@ -247,7 +243,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="term_type"
+        name="team_app_team_less_than_4"
         render={({ field }) => (
           <FormItem className="space-y-3">
             <FormLabel>{questionToText["team_app_team_less_than_4"]}</FormLabel>
@@ -259,13 +255,13 @@ export function TeamApplication({ control }: { control: any }) {
               >
                 <FormItem className="flex items-center space-y-0 space-x-3">
                   <FormControl>
-                    <RadioGroupItem value="Work Term" />
+                    <RadioGroupItem value="Yes" />
                   </FormControl>
                   <FormLabel className="font-normal">Yes</FormLabel>
                 </FormItem>
                 <FormItem className="flex items-center space-y-0 space-x-3">
                   <FormControl>
-                    <RadioGroupItem value="Study Term" />
+                    <RadioGroupItem value="No" />
                   </FormControl>
                   <FormLabel className="font-normal">No</FormLabel>
                 </FormItem>
@@ -278,7 +274,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_skills"
+        name="team_app_goal"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_goal"]}</FormLabel>
@@ -298,7 +294,7 @@ export function TeamApplication({ control }: { control: any }) {
 
       <FormField
         control={control}
-        name="engineering_skills"
+        name="team_app_pm_interest"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{questionToText["team_app_pm_interest"]}</FormLabel>

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ProfileForm } from "./form";
+import { ProfileForm } from "./prodconForm";
 
 export default function Hero() {
   return (
