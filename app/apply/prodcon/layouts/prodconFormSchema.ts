@@ -91,7 +91,7 @@ export const questionToText: { [key: string]: string } = {
   team_app_team_less_than_4:
     "If you are signing up as a team of less than 4, are you open to being grouped with another team/individual?",
   team_app_goal:
-    "What does your team hope to gain from ProdCon 2024?",
+    "What does your team hope to gain from ProdCon 2025?",
   team_app_pm_interest:
     "Why is your team interested in product management?",
   individual_app_name:
@@ -108,7 +108,7 @@ export const questionToText: { [key: string]: string } = {
 
 export const prodconFormSchema = z.object({
   // application type: team or individual
-  app_type: z.enum(["team", "individual"]).optional(),
+  app_type: z.enum(["team", "individual"]),
 
   // Team fields (members 1-4)
   team_app_member1_name: z.string().optional(),
@@ -140,21 +140,33 @@ export const prodconFormSchema = z.object({
 })
 
 .superRefine((data, ctx) => {
-  // If the applicant picked a team, ensure at least one teammate name is provided
+  // If the applicant picked a team, ensure at least two teammate name+email pairs are provided
   if (data.app_type === "team") {
-    const memberNames = [
-      data.team_app_member1_name,
-      data.team_app_member2_name,
-      data.team_app_member3_name,
-      data.team_app_member4_name,
+    const members = [
+      { name: data.team_app_member1_name, email: data.team_app_member1_email, base: "team_app_member1" },
+      { name: data.team_app_member2_name, email: data.team_app_member2_email, base: "team_app_member2" },
+      { name: data.team_app_member3_name, email: data.team_app_member3_email, base: "team_app_member3" },
+      { name: data.team_app_member4_name, email: data.team_app_member4_email, base: "team_app_member4" },
     ];
 
-    const hasMember = memberNames.some((n) => typeof n === "string" && n.trim().length > 0);
-    if (!hasMember) {
+    // require at least two complete members (name + email)
+    const completeCount = members.reduce((count, m) => {
+      const hasName = typeof m.name === "string" && m.name.trim().length > 0;
+      const hasEmail = typeof m.email === "string" && m.email.trim().length > 0;
+      return count + (hasName && hasEmail ? 1 : 0);
+    }, 0);
+
+    if (completeCount < 2) {
+      // Add issues for the first two member slots recommending both name and email
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "For team applications, provide at least one teammate name (Teammate 1 is recommended).",
+        message: "Team applications require at least two members with name and email (provide teammate 1 and teammate 2).",
         path: ["team_app_member1_name"],
+      });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Team applications require at least two members with name and email (provide teammate 1 and teammate 2).",
+        path: ["team_app_member2_name"],
       });
     }
   }

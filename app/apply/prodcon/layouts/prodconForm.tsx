@@ -33,7 +33,7 @@ export function ProfileForm() {
   // 1. Define your form.
   const form = useForm<z.infer<typeof prodconFormSchema>>({
     resolver: zodResolver(prodconFormSchema),
-    // resolver: undefined,
+    mode: "onChange",
   });
 
   // 2. Define a submit handler.
@@ -101,7 +101,7 @@ export function ProfileForm() {
   };
 
   // Application type logic
-  const { control, watch } = form;
+  const { control, watch, formState } = form;
   const appType = watch("app_type") as string;
 
   // Carousel config //////////////////////////////////////////////////////////////
@@ -192,9 +192,10 @@ export function ProfileForm() {
           <Button
             type="submit"
             className="absolute right-4"
-            disabled={submitting}
+            disabled={submitting || !formState.isValid}
+            aria-disabled={submitting || !formState.isValid}
           >
-            Submit
+            {submitting ? <Spinner /> : "Submit"}
           </Button>
         </form>
       </Form>
