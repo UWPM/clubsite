@@ -32,7 +32,7 @@ export function Intro({ control }: { control: any }) {
             Applications for Prodcon 2025 are now open! 🎉
           </p>
           <p>
-            Come out to ProdCon 2025 on November 15th! This is your chance to hear top-notch product managers talk about their experiences and work with a team to pitch your product idea for the case study. 💻💰
+            Come out to ProdCon 2025 on November 22nd! This is your chance to hear top-notch product managers talk about their experiences and work with a team to pitch your product idea for the case study. 💻💰
           </p>
           <p>
             ProdCon will be held in-person this term 🎉! You will need to make your own arrangements to get to the University of Waterloo campus!
@@ -44,7 +44,7 @@ export function Intro({ control }: { control: any }) {
             Sign up in groups of 2 to 4 or as an individual, and we’ll match you to a group! For Group submissions, only one application is needed per team.
           </p>
           <p>
-            Applications are due on November 10th, at 11:59 PM EST. All applications submitted before the deadline will be reviewed by our team.
+            Applications are due on November 13th, at 11:59 PM EST. All applications submitted before the deadline will be reviewed by our team.
           </p>
           <p>Good luck, and we hope to see you there! 🎉</p>
         </div>
