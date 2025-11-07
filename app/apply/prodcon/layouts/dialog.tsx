@@ -9,8 +9,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+// removed checkbox option to include responses in confirmation email
 
 interface SubmissionDialogProps {
   submitted: boolean;
@@ -28,7 +27,7 @@ export default function SubmissionDialog({
   values,
 }: SubmissionDialogProps) {
   const [dialogStep, setDialogStep] = useState(1);
-  const [sendResponseCopy, setSendResponseCopy] = useState(false);
+  // responses will no longer be included in confirmation emails
 
   // Derive a best-effort recipient email and a display name from the submission
   const derivedEmail =
@@ -55,16 +54,16 @@ export default function SubmissionDialog({
     setDialogStep(1); // Reset step when dialog closes
 
     // If a submission had occurred, refresh the page after the dialog closes
-    if (wasSubmitted) {
-      // allow the dialog close animation to play briefly
-      setTimeout(() => {
-        try {
-          window.location.href = window.location.pathname;
-        } catch (e) {
-          window.location.reload();
-        }
-      }, 300);
-    }
+    // if (wasSubmitted) {
+    //   // allow the dialog close animation to play briefly
+    //   setTimeout(() => {
+    //     try {
+    //       window.location.href = window.location.pathname;
+    //     } catch (e) {
+    //       window.location.reload();
+    //     }
+    //   }, 300);
+    // }
   };
 
   const handleNext = async () => {
@@ -74,8 +73,8 @@ export default function SubmissionDialog({
     const requestBody = {
       email: derivedEmail,
       fullName: derivedFullName,
-      // send the raw responses if available (that's the canonical shape stored in DB)
-      responses: sendResponseCopy ? values?.raw ?? values : null,
+      // responses are no longer sent for privacy
+      responses: null,
     };
 
     // trigger confirmation email via the API route
@@ -89,17 +88,17 @@ export default function SubmissionDialog({
       // move to step 2 (Confirmation Email Sent) and then auto-refresh the page
       setDialogStep(2);
       // give the user a moment to read the confirmation, then reload to reset the form
-      setTimeout(() => {
-        // close dialog and reset parent submitted state
-        handleClose();
-        // reload current page path to return form to initial state
-        try {
-          window.location.href = window.location.pathname;
-        } catch (e) {
-          // fallback to a full reload
-          window.location.reload();
-        }
-      }, 1500);
+      // setTimeout(() => {
+      //   // close dialog and reset parent submitted state
+      //   handleClose();
+      //   // reload current page path to return form to initial state
+      //   try {
+      //     window.location.href = window.location.pathname;
+      //   } catch (e) {
+      //     // fallback to a full reload
+      //     window.location.reload();
+      //   }
+      // }, 1500);
     } catch (error) {
       console.error("Error triggering email:", error);
     }
@@ -128,27 +127,11 @@ export default function SubmissionDialog({
               ? "There was an error submitting your application. This may be because an application has already been submitted with this email address, or due to a technical issue."
               : dialogStep === 1
                 ? `Thank you for applying to UWPM! A confirmation email will be sent to you (${derivedEmail ?? "no email provided"}).`
-                : `A confirmation email has been sent to ${derivedEmail ?? "no email provided"}${sendResponseCopy ? " with a copy of your responses" : ""}. Good luck!`}
+                : `A confirmation email has been sent to ${derivedEmail ?? "no email provided"}. Good luck!`}
           </DialogDescription>
         </DialogHeader>
 
-        {submitted && dialogStep === 1 && (
-          <div className="flex items-start space-x-2 pt-4">
-            <Checkbox
-              id="send-copy"
-              checked={sendResponseCopy}
-              onCheckedChange={(checked: any) =>
-                setSendResponseCopy(checked === true)
-              }
-            />
-            <Label
-              htmlFor="send-copy"
-              className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Include a copy of my responses in the confirmation email
-            </Label>
-          </div>
-        )}
+        {/* responses copy option removed for privacy */}
 
         <div className="mt-4 flex justify-end">
           {submitError ? (
