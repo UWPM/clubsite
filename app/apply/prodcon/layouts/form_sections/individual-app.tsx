@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 
-import { handleWordCount, questionToText } from "../prodconFormSchema";
+import { handleCharCount, handleWordCount, questionToText } from "../prodconFormSchema";
 
 export function IndividualApplication({ control }: { control: any }) {
   return (
@@ -91,7 +91,7 @@ export function IndividualApplication({ control }: { control: any }) {
                   placeholder=""
                   className="resize-y"
                   value={field.value} // Bind the field value directly
-                  onChange={(e) => handleWordCount(e, field, 1000)} // Attach word count handler
+                  onChange={(e) => handleCharCount(e, field, 1000)} // Attach word count handler
                 />
               </FormControl>
               <FormDescription>Maximum: 1000 characters</FormDescription>
@@ -113,7 +113,7 @@ export function IndividualApplication({ control }: { control: any }) {
                   placeholder=""
                   className="resize-y"
                   value={field.value} // Bind the field value directly
-                  onChange={(e) => handleWordCount(e, field, 1000)} // Attach word count handler
+                  onChange={(e) => handleCharCount(e, field, 1000)} // Attach word count handler
                 />
               </FormControl>
               <FormDescription>Maximum: 1000 characters</FormDescription>

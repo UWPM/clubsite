@@ -68,12 +68,13 @@ export function ProfileForm() {
         })
         .filter((m) => m.name || m.email || m.program);
 
-      submission.team = {
-        members: members as any,
-        open_to_grouping: values.team_app_team_less_than_4 === "Yes",
-        goal: values.team_app_goal || null,
-        pm_interest: values.team_app_pm_interest || null,
-      };
+    submission.team = {
+      members: members as any,
+      // default to true when the field is not set
+      open_to_grouping: (values.team_app_team_less_than_4 ?? "Yes") === "Yes",
+      goal: values.team_app_goal || null,
+      pm_interest: values.team_app_pm_interest || null,
+    };
     }
 
     // If individual, build IndividualData

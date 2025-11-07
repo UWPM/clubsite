@@ -9,8 +9,24 @@ export const handleWordCount = (
   const text = e.target.value;
   const wordCount = text.split(/\s+/).filter(Boolean).length;
 
-  // If word count exceeds 100, stop further input
-  if (wordCount < maxWords) {
+  // Allow input up to and including maxWords. If the user exceeds the limit,
+  // refuse the additional change (this prevents the controlled field from updating).
+  if (wordCount <= maxWords) {
+    field.onChange(e);
+  }
+};
+
+export const handleCharCount = (
+  e: React.ChangeEvent<HTMLTextAreaElement>,
+  field: any,
+  maxChar: number,
+) => {
+  const text = e.target.value;
+  const charCount = text.length;
+
+  // Allow input up to and including maxChar characters. If the user exceeds
+  // the limit, refuse the additional change so the controlled field doesn't update.
+  if (charCount <= maxChar) {
     field.onChange(e);
   }
 };
