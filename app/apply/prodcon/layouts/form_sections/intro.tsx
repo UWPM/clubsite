@@ -44,7 +44,7 @@ export function Intro({ control }: { control: any }) {
             Sign up in groups of 2 to 4 or as an individual, and we’ll match you to a group! For Group submissions, only one application is needed per team.
           </p>
           <p>
-            Applications are due on November 13th, at 11:59 PM EST. All applications submitted before the deadline will be reviewed by our team.
+            Applications are due on <b>Friday, November 14th, at 11:59 PM EST.</b> All applications submitted before the deadline will be reviewed by our team.
           </p>
           <p>Good luck, and we hope to see you there! 🎉</p>
         </div>
