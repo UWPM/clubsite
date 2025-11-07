@@ -13,7 +13,7 @@ import { handleCharCount, handleWordCount, questionToText } from "../prodconForm
 export function IndividualApplication({ control }: { control: any }) {
   return (
     <div className="space-y-5 font-semibold">
-      <h3>Individual Application</h3>
+      <h3>ProdCon 2025 - Individual Application</h3>
       <div className="flex flex-col gap-8 mb-12">
         <div className="flex flex-col gap-4 border-b pb-8">
           {/* Details */}

@@ -14,7 +14,7 @@ import { handleCharCount, handleWordCount, questionToText } from "../prodconForm
 export function TeamApplication({ control }: { control: any }) {
   return (
     <div className="space-y-5 font-semibold">
-      <h3>ProdCon 2025 Team Application</h3>
+      <h3>ProdCon 2025 - Team Application</h3>
       <div className="flex flex-col gap-8 mb-12">
         <div className="flex flex-col gap-4 border-b pb-8">
           {/* Teammate 1 Details */}
