@@ -10,7 +10,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function Newsletter({ control }: { control: any }) {
   const available_roles = [
-    { id: "director", label: "Newsletter Director" },
+    { id: "director", label: "Content Director" },
+    { id: "lead", label: "VP Content" },
   ] as const;
 
   return (

@@ -1,5 +1,5 @@
 // app/api/email/route.ts
-import { sendConfirmationEmail } from "@/trigger/prodcon-confirmation-email";
+import { sendConfirmationEmail } from "@/trigger/trigger-email";
 import { tasks } from "@trigger.dev/sdk/v3";
 import { NextResponse } from "next/server";
 

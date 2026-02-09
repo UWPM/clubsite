@@ -8,7 +8,7 @@ export async function submitApplication(formData: FormSubmission) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("applications")
+    .from("applications_W26")
     .insert([formData])
     .select("id")
     .single();

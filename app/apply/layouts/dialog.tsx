@@ -81,37 +81,38 @@ export default function SubmissionDialog({
             {submitError
               ? "There was an error submitting your application. This may be because an application has already been submitted with this email address, or due to a technical issue."
               : dialogStep === 1
-                ? `Thank you for applying to UWPM! A confirmation email will be sent to you (${values?.uw_email_address}).`
-                : `A confirmation email has been sent to ${values?.uw_email_address}${sendResponseCopy ? " with a copy of your responses" : ""}. Good luck!`}
+                ? `Thank you for applying to UWPM!
+                `
+                : `Good luck!`}
           </DialogDescription>
         </DialogHeader>
 
         {submitted && dialogStep === 1 && (
           <div className="flex items-start space-x-2 pt-4">
-            <Checkbox
+            {/* <Checkbox
               id="send-copy"
               checked={sendResponseCopy}
               onCheckedChange={(checked) =>
                 setSendResponseCopy(checked === true)
               }
-            />
-            <Label
+            /> */}
+            {/* <Label
               htmlFor="send-copy"
               className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               Include a copy of my responses in the confirmation email
-            </Label>
+            </Label> */}
           </div>
         )}
 
-        <div className="mt-4 flex justify-end">
+        {/* <div className="mt-4 flex justify-end">
           {submitError ? (
             <Button variant="destructive" onClick={handleClose}>
               Close
             </Button>
           ) : dialogStep ===
             1 ? <Button onClick={handleNext}>Send Email</Button> : null}
-        </div>
+        </div> */}
       </DialogContent>
     </Dialog>
   );

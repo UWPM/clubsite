@@ -11,7 +11,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 export function Design({ control }: { control: any }) {
   const available_roles = [
     { id: "director", label: "Design Director" },
-    { id: "lead", label: "Design Lead" },
   ] as const;
 
   return (

@@ -8,7 +8,7 @@ export async function getApplications(): Promise<{ [key in TeamId]?: FormSubmiss
     const supabase = await createClient();
 
     const { data, error } = await supabase
-            .from('applications')
+            .from('applications_W26')
             .select('*');
 
     if (error) {
@@ -46,7 +46,7 @@ export async function updateApplicationSelection(applicantId: string, selected: 
     // update first choice selection status
     if (first_choice) {
         const { error } = await supabase
-            .from("applications")
+            .from("applications_W26")
             .update({ selected_first_choice: selected })
             .eq("id", applicantId);
         if (error) {
@@ -56,7 +56,7 @@ export async function updateApplicationSelection(applicantId: string, selected: 
     // update second choice team selection status
     else {
         const { error } = await supabase
-            .from("applications")
+            .from("applications_W26")
             .update({ selected_second_choice: selected })
             .eq("id", applicantId);
         if (error) {
@@ -71,7 +71,7 @@ export async function updateApplicationTag(applicantId: string, tag: string | nu
     // update first choice tag
     if (first_choice) {
         const { error } = await supabase
-            .from("applications")
+            .from("applications_W26")
             .update({ tag_first_choice: tag })
             .eq("id", applicantId);
 
@@ -82,7 +82,7 @@ export async function updateApplicationTag(applicantId: string, tag: string | nu
     // update second choice tag
     else {
         const { error } = await supabase
-            .from("applications")
+            .from("applications_W26")
             .update({ tag_second_choice: tag })
             .eq("id", applicantId);
 

@@ -16,6 +16,7 @@ import { teamOptions,secondTeamOptions, handleWordCount, questionToText} from ".
 export function Podcast({ control }: { control: any }) {
   const available_roles = [
     { id: "director", label: "Podcast Director" },
+    { id: "lead", label: "VP Podcast" },
   ] as const;
 
   return (

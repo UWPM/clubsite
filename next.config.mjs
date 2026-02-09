@@ -10,7 +10,7 @@ const nextConfig = {
         // Added 'prodcon' (the new route) and 'images' (public assets) so requests
         // for the banner and other static files are served normally.
         source: "/((?!apply|dashboard|hidden-login|api|prodcon|images|_next|favicon\.ico).*)",
-        destination: "/apply/prodcon",
+        destination: "/apply",
         permanent: false,
       },
     ];

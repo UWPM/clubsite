@@ -21,7 +21,7 @@ export const teamOptions = [
   "Engineering",
   "Finance",
   "Outreach",
-  "Newsletter",
+  "Content",
   "Design",
 ];
 export const secondTeamOptions = [
