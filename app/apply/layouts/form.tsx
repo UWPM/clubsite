@@ -22,7 +22,7 @@ import { Engineering } from "./form_sections/engineering";
 import { Finance } from "./form_sections/finance";
 import { Design } from "./form_sections/design";
 import { Newsletter } from "./form_sections/newsletter";
-
+import { Copresident } from "./form_sections/co-president";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import Spinner from "@/components/ui/spinner";
@@ -34,6 +34,7 @@ export function ProfileForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(false);
+  const [showUnfilledError, setShowUnfilledError] = useState(false);
   const [submissionObject, setSubmissionObject] =
     useState<FormSubmission | null>(null);
 
@@ -58,9 +59,10 @@ export function ProfileForm() {
 
   // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setShowUnfilledError(false);
     setSubmitting(true);
     // console.log("Submitting");
-    
+
     // Data mapping
     const submission: FormSubmission = {
       created_at: new Date().toISOString(),
@@ -79,10 +81,10 @@ export function ProfileForm() {
       resume_link: values.resume_link,
       team_responses: {} as TeamResponses,
     };
-  
+
     // Populate the team_responses dynamically based on selected teams
     const teamResponses: TeamResponses = {};
-  
+
     if (
       values.first_choice_team === "Engineering" ||
       values.second_choice_team === "Engineering"
@@ -95,7 +97,19 @@ export function ProfileForm() {
         engineering_project_link: values.engineering_project_link || "",
       };
     }
-  
+
+    if (
+      values.first_choice_team === "Co-president" ||
+      values.second_choice_team === "Co-president"
+    ) {
+      teamResponses["co-president"] = {
+        choice_num: values.first_choice_team === "Co-president" ? 1 : 2,
+        copres_vision: values.copres_vision || "",
+        copres_challenge: values.copres_challenge || "",
+        copres_decision: values.copres_decision || "",
+      };
+    }
+
     if (
       values.first_choice_team === "Marketing" ||
       values.second_choice_team === "Marketing"
@@ -107,7 +121,7 @@ export function ProfileForm() {
           values.marketing_example_instagram_post || "",
       };
     }
-  
+
     if (
       values.first_choice_team === "Outreach" ||
       values.second_choice_team === "Outreach"
@@ -119,7 +133,7 @@ export function ProfileForm() {
         lead_applicant: values.outreach_role === "lead",
       };
     }
-  
+
     if (
       values.first_choice_team === "Podcast" ||
       values.second_choice_team === "Podcast"
@@ -128,10 +142,10 @@ export function ProfileForm() {
         choice_num: values.first_choice_team === "Podcast" ? 1 : 2,
         podcast_skills: values.podcast_skills || "",
         podcast_example: values.podcast_example || "",
-        lead_applicant: false
+        lead_applicant: false,
       };
     }
-  
+
     if (
       values.first_choice_team === "Secretary" ||
       values.second_choice_team === "Secretary"
@@ -143,7 +157,7 @@ export function ProfileForm() {
         secretary_team_conflict: values.secretary_team_conflict || "",
       };
     }
-  
+
     // Modified Events section
     if (
       values.first_choice_team === "Events" ||
@@ -153,10 +167,10 @@ export function ProfileForm() {
         choice_num: values.first_choice_team === "Events" ? 1 : 2,
         events_skills: values.events_skills || "",
         events_past_experience: values.events_past_experience || "",
-        lead_applicant: values.events_role === "lead"
+        lead_applicant: values.events_role === "lead",
       };
     }
-  
+
     // Modified Finance section
     if (
       values.first_choice_team === "Finance" ||
@@ -166,33 +180,33 @@ export function ProfileForm() {
         choice_num: values.first_choice_team === "Finance" ? 1 : 2,
         finance_project: values.finance_project || "",
         finance_time_management: values.finance_time_management || "",
-        lead_applicant: false
+        lead_applicant: false,
       };
 
-    if (
-      values.first_choice_team === "Design" ||
-      values.second_choice_team === "Design"
-    ) {
-      teamResponses.design = {
-        choice_num: values.first_choice_team === "Design" ? 1 : 2,
-        lead_applicant: values.design_role === "lead",
-      };
-    }
+      if (
+        values.first_choice_team === "Design" ||
+        values.second_choice_team === "Design"
+      ) {
+        teamResponses.design = {
+          choice_num: values.first_choice_team === "Design" ? 1 : 2,
+          lead_applicant: values.design_role === "lead",
+        };
+      }
 
-    if (
-      values.first_choice_team === "Newsletter" ||
-      values.second_choice_team === "Newsletter"
-    ) {
-      teamResponses.newsletter = {
-        choice_num: values.first_choice_team === "Newsletter" ? 1 : 2,
+      if (
+        values.first_choice_team === "Newsletter" ||
+        values.second_choice_team === "Newsletter"
+      ) {
+        teamResponses.newsletter = {
+          choice_num: values.first_choice_team === "Newsletter" ? 1 : 2,
+        };
       }
     }
-    }
-  
+
     // Attach team responses JSON to the submission data
     submission.team_responses = teamResponses;
     setSubmissionObject(submission);
-  
+
     try {
       await submitApplication(submission);
       setSubmitted(true);
@@ -202,6 +216,10 @@ export function ProfileForm() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const onInvalidSubmit = () => {
+    setShowUnfilledError(true);
   };
 
   // Team choice logic
@@ -236,6 +254,9 @@ export function ProfileForm() {
 
   const slides = [
     { id: "intro", component: <Intro control={control} /> },
+    ...(selectedTeams.includes("Co-president")
+      ? [{ id: "copres", component: <Copresident control={control} /> }]
+      : []),
     ...(selectedTeams.includes("Events")
       ? [{ id: "events", component: <Events control={control} /> }]
       : []),
@@ -265,14 +286,12 @@ export function ProfileForm() {
       : []),
   ];
 
-  //////////////////////////////////////////////////////////////////////////////
-
   return (
     <>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="relative select-none space-y-2 transition-opacity"
+          onSubmit={form.handleSubmit(onSubmit, onInvalidSubmit)}
+          className="relative space-y-2 transition-opacity select-none"
         >
           <div className="relative mx-auto w-full">
             <div className="overflow-hidden" ref={emblaRef}>
@@ -283,7 +302,7 @@ export function ProfileForm() {
                       <CardContent className="absolute inset-0 overflow-y-auto p-6">
                         {slide.component}
                       </CardContent>
-                      <div className="absolute right-8 top-8 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-1 shadow-lg">
+                      <div className="absolute top-8 right-8 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-1 shadow-lg">
                         Step <strong>{index + 1}</strong>{" "}
                         <span className="text-zinc-500">
                           of {slides.length}
@@ -301,7 +320,7 @@ export function ProfileForm() {
                           </Button>
                         )}
                       </div>
-                      <div className="absolute bottom-4 right-4">
+                      <div className="absolute right-4 bottom-4">
                         {index < slides.length - 1 && (
                           <Button
                             onClick={scrollNext}
@@ -318,6 +337,11 @@ export function ProfileForm() {
               </div>
             </div>
           </div>
+          {showUnfilledError && (
+            <p className="mr-24 text-left text-sm text-red-600">
+              Form incomplete. Remember to scroll to the bottom to ensure all questions answered
+            </p>
+          )}
           <Button
             type="submit"
             className="absolute right-4"
